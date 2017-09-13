@@ -28,6 +28,7 @@ void MainWindow::settingsWizardInit()
 {
     SettingsWizard* w = new SettingsWizard(this);
     w->exec();
+    // get data and launch settings set up
 
 
 }

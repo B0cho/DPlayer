@@ -16,6 +16,11 @@ void CSettings::Init(const QString organisation, const QString appName)
 
 
     // if not
-    emit launchSettingsWizard();
+    if(!isRegKey("")) emit launchSettingsWizard();
+
+}
+
+const bool CSettings::isRegKey(const QString key) const
+{
 
 }
