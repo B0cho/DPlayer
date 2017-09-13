@@ -19,17 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    if(settings) delete settings;
-
-}
-
-void MainWindow::settingsWizardInit()
-{
-    SettingsWizard* w = new SettingsWizard(this);
-    w->exec();
-    // get data and launch settings set up
 
 
 }
+
+
 

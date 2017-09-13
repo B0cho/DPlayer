@@ -21,7 +21,7 @@ public:
 private:
     // members
     QSettings _reg;
-    QUrl _lastdir;
+    QUrl _lastdir, DBdir;
     QDateTime _lastDate, _creationDate;
 
 
@@ -29,7 +29,7 @@ private:
 
 
 signals:
-    void launchSettingsWizard() const;
+
 
 
 public slots:
