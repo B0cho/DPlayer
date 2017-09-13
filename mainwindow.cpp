@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // connections
     connect(settings, SIGNAL(launchSettingsWizard()), this, SLOT(settingsWizardInit()));
     // settings init
-    settings->Init(QCoreApplication::organizationName().toUpper(), QCoreApplication::applicationName().toUpper(), QUrl(""));
+    settings->Init(QCoreApplication::organizationName().toUpper(), QCoreApplication::applicationName().toUpper());
 
 
 

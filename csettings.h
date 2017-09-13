@@ -17,19 +17,20 @@ public:
     // ctors dtors
     explicit CSettings(QObject *parent = nullptr);
     ~CSettings();
-    void Init(const QString organisation, const QString appName, const QUrl DBdir);
+    void Init(const QString organisation, const QString appName);
 private:
     // members
     QSettings _reg;
     QUrl _lastdir;
     QDateTime _lastDate, _creationDate;
 
+
     // methods
 
 
 signals:
     void launchSettingsWizard() const;
-    void noDBNotification() const;
+
 
 public slots:
 };

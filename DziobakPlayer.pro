@@ -36,5 +36,4 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui \
-    Wizards/settingswizard.ui \
-    Wizards/wizardpage.ui
+    Wizards/settingswizard.ui
