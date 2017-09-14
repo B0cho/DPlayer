@@ -13,3 +13,15 @@ SettingsWizard::~SettingsWizard()
 {
     delete ui;
 }
+
+const SettingsWizard::QUrl getDBUrl() const
+{
+	
+	
+}
+
+const SettingsWizard::QList<QUrl> getPaths() const
+{
+	
+	
+}
