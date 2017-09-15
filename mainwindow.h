@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QMessageBox>
+#include <QString>
 #include "csettings.h"
+#include "cmediabase.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,10 +29,12 @@ private:
     Ui::MainWindow *ui;
     // settings
     CSettings* settings;
+	CMediaBase* base;
     // members
 
     // key names
 private slots:
+	void DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
 
 
 };
