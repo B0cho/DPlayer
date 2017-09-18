@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     csettings.cpp \
-    Wizards/settingswizard.cpp
+    Wizards/settingswizard.cpp \
+    cmediabase.cpp
 
 HEADERS += \
         mainwindow.h \
     csettings.h \
-    Wizards/settingswizard.h
+    Wizards/settingswizard.h \
+    cmediabase.h
 
 FORMS += \
         mainwindow.ui \

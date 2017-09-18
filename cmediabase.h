@@ -4,8 +4,9 @@
 #include <QObject>
 #include <QDir>
 #include <QFileInfo>
+#include <QSqlDatabase>
 
-class CMediaBase
+class CMediaBase: public QObject
 {
 	Q_OBJECT
 public:
@@ -14,23 +15,23 @@ public:
 	~CMediaBase();
 	
 	// methods
-	const bool isLoaded() const;
+    const bool isPlaylists() const;
+    const bool isFragments() const;
 	// members
 	
 private:
 	// members
-	const QString _baseFileName = "dplayerDB";
-	QFileInfo _dbPath;
-	bool _loaded;
+    QFileInfo _playlistsFile, _fragmentsFile;
+    QSqlDatabase _playlistsDb, _fragmentsDb;
 	
 public slots:
-	bool loadDatabase(const QFileInfo path);
-	bool createDatabase(const QDir dir);
+    bool loadDatabases(const QFileInfo playlists, const QFileInfo fragments);
+    bool createDatabases(const QFileInfo playlists, const QFileInfo fragments);
 	
 signals:
-	void DatabaseLoaded(const bool result) const;
-	void DatabaseCreated(const bool result, const QFileInfo localisation) const;
+    void DatabasesLoaded(const bool playlists, const bool fragments) const;
+    void DatabasesCreated(const QFileInfo playlists, const QFileInfo fragments) const;
 
-}
+};
 
 #endif // CMEDIABASE_H

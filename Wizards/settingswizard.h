@@ -2,7 +2,8 @@
 #define SETTINGSWIZARD_H
 
 #include <QWizard>
-#include <QUrl>
+#include <QDir>
+#include <QFileInfo>
 
 /*
 COMPLETE WIZARD PAGES AND METHODS
@@ -22,8 +23,7 @@ public:
     ~SettingsWizard();
 	
 	// methods
-	const QUrl getDBUrl() const;
-	const QList<QUrl> getPaths() const;
+    const QList<QDir> getPaths() const;
 
 private:
     Ui::SettingsWizard *ui;
