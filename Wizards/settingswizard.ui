@@ -6,21 +6,88 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>745</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Player</string>
+   <string>Welcome to DziobakPlayer!</string>
+  </property>
+  <property name="toolTip">
+   <string/>
+  </property>
+  <property name="statusTip">
+   <string notr="true"/>
+  </property>
+  <property name="whatsThis">
+   <string notr="true"/>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <property name="options">
-   <set>QWizard::NoBackButtonOnLastPage|QWizard::NoBackButtonOnStartPage|QWizard::NoCancelButtonOnLastPage</set>
+  <property name="wizardStyle">
+   <enum>QWizard::AeroStyle</enum>
   </property>
-  <widget class="QWizardPage" name="wizardPage1"/>
-  <widget class="QWizardPage" name="wizardPage2"/>
+  <property name="options">
+   <set>QWizard::CancelButtonOnLeft|QWizard::DisabledBackButtonOnLastPage|QWizard::NoBackButtonOnLastPage|QWizard::NoBackButtonOnStartPage|QWizard::NoCancelButtonOnLastPage|QWizard::NoDefaultButton</set>
+  </property>
+  <property name="titleFormat">
+   <enum>Qt::RichText</enum>
+  </property>
+  <property name="subTitleFormat">
+   <enum>Qt::AutoText</enum>
+  </property>
+  <widget class="QWizardPage" name="introPage">
+   <property name="title">
+    <string>Hello there!</string>
+   </property>
+   <property name="subTitle">
+    <string>Time to start! This wizard will help you to adjust your settings. If you want to skip and just listen, click Cancel!</string>
+   </property>
+  </widget>
+  <widget class="QWizardPage" name="dbPage">
+   <property name="title">
+    <string>Databases first!</string>
+   </property>
+   <property name="subTitle">
+    <string>Browse for directories to create following databases:</string>
+   </property>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>431</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>GroupBox</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="dirsPage">
+   <property name="title">
+    <string>Where is your music?</string>
+   </property>
+   <property name="subTitle">
+    <string>Browse for directories where your media is:</string>
+   </property>
+  </widget>
+  <widget class="QWizardPage" name="finishPage">
+   <property name="title">
+    <string>Finally!</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

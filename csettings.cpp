@@ -12,8 +12,8 @@ CSettings::~CSettings()
 
 void CSettings::Init()
 {
-	// checking whether register key exists
-	if(!_reg.contains("default"))
+    // checking whether register key exists
+    if(!_reg.contains(creationdate))
 	{
 		// creating wizard
 		SettingsWizard wiz;
@@ -25,7 +25,7 @@ void CSettings::Init()
 			// READING PATHS
 			
             // saving data to registry
-			saveSettings();
+            //saveSettings();
             // creating dbs
             //emit createDBs(QFileInfo("wtf", playlists), QFileInfo("wtf", fragments));
         } else _init = false;

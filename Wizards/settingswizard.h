@@ -27,6 +27,7 @@ public:
 
 private:
     Ui::SettingsWizard *ui;
+    QPixmap _watermark;
 };
 
 #endif // SETTINGSWIZARD_H
