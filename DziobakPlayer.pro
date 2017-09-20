@@ -39,3 +39,6 @@ HEADERS += \
 FORMS += \
         mainwindow.ui \
     Wizards/settingswizard.ui
+
+RESOURCES += \
+    res.qrc

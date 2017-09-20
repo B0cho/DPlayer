@@ -2,13 +2,22 @@
 <ui version="4.0">
  <class>SettingsWizard</class>
  <widget class="QWizard" name="SettingsWizard">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
-    <height>553</height>
+    <width>642</width>
+    <height>466</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Welcome to DziobakPlayer!</string>
@@ -25,11 +34,14 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
   <property name="wizardStyle">
-   <enum>QWizard::AeroStyle</enum>
+   <enum>QWizard::ModernStyle</enum>
   </property>
   <property name="options">
    <set>QWizard::CancelButtonOnLeft|QWizard::DisabledBackButtonOnLastPage|QWizard::NoBackButtonOnLastPage|QWizard::NoBackButtonOnStartPage|QWizard::NoCancelButtonOnLastPage|QWizard::NoDefaultButton</set>
@@ -41,12 +53,95 @@
    <enum>Qt::AutoText</enum>
   </property>
   <widget class="QWizardPage" name="introPage">
+   <property name="baseSize">
+    <size>
+     <width>620</width>
+     <height>350</height>
+    </size>
+   </property>
    <property name="title">
     <string>Hello there!</string>
    </property>
    <property name="subTitle">
-    <string>Time to start! This wizard will help you to adjust your settings. If you want to skip and just listen, click Cancel!</string>
+    <string>Time to start! This wizard will help you to adjust your settings.</string>
    </property>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>601</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>80</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>360</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Following pages will ask you for some directories and will prepare files and registry. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to skip and just listen to music, click Cancel!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="margin">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+   <zorder>verticalLayoutWidget_2</zorder>
+   <zorder>verticalSpacer</zorder>
   </widget>
   <widget class="QWizardPage" name="dbPage">
    <property name="title">
@@ -60,16 +155,169 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>431</width>
-      <height>80</height>
+      <width>361</width>
+      <height>281</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="title">
-        <string>GroupBox</string>
+      <widget class="QGroupBox" name="groupBox_playlists">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>359</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Playlists</string>
+       </property>
+       <widget class="QWidget" name="verticalLayoutWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>30</y>
+          <width>341</width>
+          <height>87</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="lineEdit_playlists">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QCheckBox" name="checkBox_createPlaylists">
+             <property name="text">
+              <string>Create</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_playlistsBrowse">
+             <property name="text">
+              <string>Browse</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_fragments">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>359</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Fragments</string>
+       </property>
+       <widget class="QWidget" name="verticalLayoutWidget_11">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>341</width>
+          <height>81</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_11">
+         <item>
+          <widget class="QLineEdit" name="lineEdit_fragments">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QCheckBox" name="checkBox_createFragments">
+             <property name="text">
+              <string>Create</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_fragmentsBrowse">
+             <property name="text">
+              <string>Browse</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -81,6 +329,75 @@
    </property>
    <property name="subTitle">
     <string>Browse for directories where your media is:</string>
+   </property>
+   <widget class="QWidget" name="verticalLayoutWidget_12">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>351</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_15">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QListWidget" name="listWidget_directories"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_12">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_12">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_addDirectory">
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_deleteDirectory">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QWizardPage" name="ytPage">
+   <property name="title">
+    <string>Youtube</string>
+   </property>
+   <property name="subTitle">
+    <string>Have Youtube account?</string>
    </property>
   </widget>
   <widget class="QWizardPage" name="finishPage">
