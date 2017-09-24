@@ -2,7 +2,7 @@
 
 CSettings::CSettings(QObject *parent) : QObject(parent)
 {
-    _init = true;
+    _init = false;
 }
 
 CSettings::~CSettings()
@@ -10,6 +10,7 @@ CSettings::~CSettings()
 	saveSettings(true);
 }
 
+/*
 void CSettings::Init()
 {
     // checking whether register key exists
@@ -31,7 +32,20 @@ void CSettings::Init()
         } else _init = false;
     } else readSettings();
 }
-
+*/
+void CSettings::Init()
+{
+    // checking whether register key exists
+    if(!_reg.contains(creationdate))
+    {
+        // creating wizard
+        SettingsWizard wiz;
+        connect(&wiz, SIGNAL(dataCompleted(settingsWizardData)), this, SLOT(wizardData(settingsWizardData)));
+        connect(this, SIGNAL(wizardDataProcessed(settingsWizardFeedback)), &wiz, SLOT(wizardFeedback(settingsWizardFeedback)));
+        wiz.exec();
+        //
+    } else readSettings();
+}
 
 void CSettings::saveSettings(const bool exit)
 {
@@ -80,4 +94,12 @@ void CSettings::DBsLoadResult(const bool playlists, const bool fragments)
 void CSettings::DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments)
 {
 
+}
+
+void CSettings::wizardData(settingsWizardData data)
+{
+    settingsWizardFeedback feedback;
+    _init = true;
+
+    emit wizardDataProcessed(feedback);
 }

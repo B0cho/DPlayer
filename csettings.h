@@ -45,14 +45,16 @@ private:
     fragments = "fragmentsDB";
 	
 signals:
+    void wizardDataProcessed(const settingsWizardFeedback) const;
     void createDBs(const QFileInfo playlists, const QFileInfo fragments) const;
     void loadDBs(const QFileInfo playlists, const QFileInfo fragments) const;
 
 private slots:
+    void wizardData(settingsWizardData data);
     void DBsLoadResult(const bool playlists, const bool fragments);
     void DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments);
 
-public slots:
+public slots:    
 	void saveSettings(const bool exit = false);
 	void readSettings();
 	void clearRegKeys();

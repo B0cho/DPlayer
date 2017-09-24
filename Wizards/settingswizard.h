@@ -14,6 +14,20 @@ namespace Ui {
 class SettingsWizard;
 }
 
+struct settingsWizardData
+{
+    QString fragmentsDirectory, playlistsDirectory;
+    QList<QString> mediaDirectories;
+    QPair<QString, QString> ytData;
+};
+
+struct settingsWizardFeedback
+{
+    bool regkeyCreated;
+    QString playlistsPath, fragmentsPath;
+
+};
+
 class SettingsWizard : public QWizard
 {
     Q_OBJECT
@@ -23,11 +37,18 @@ public:
     ~SettingsWizard();
 	
 	// methods
-    const QList<QDir> getPaths() const;
+
+signals:
+    void dataCompleted(settingsWizardData data) const;
 
 private:
     Ui::SettingsWizard *ui;
-    QPixmap _watermark;
+
+public slots:
+    void wizardFeedback(const settingsWizardFeedback results);
+
+private slots:
+    void on_SettingsWizard_currentIdChanged(int id);
 };
 
 #endif // SETTINGSWIZARD_H

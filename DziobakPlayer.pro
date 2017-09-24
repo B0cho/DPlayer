@@ -28,17 +28,23 @@ SOURCES += \
         mainwindow.cpp \
     csettings.cpp \
     Wizards/settingswizard.cpp \
-    cmediabase.cpp
+    cmediabase.cpp \
+    Wizards/Settings/dbwizardpage.cpp \
+    Wizards/Settings/dirswizardpage.cpp
 
 HEADERS += \
         mainwindow.h \
     csettings.h \
     Wizards/settingswizard.h \
-    cmediabase.h
+    cmediabase.h \
+    Wizards/Settings/dbwizardpage.h \
+    Wizards/Settings/dirswizardpage.h
 
 FORMS += \
         mainwindow.ui \
-    Wizards/settingswizard.ui
+    Wizards/settingswizard.ui \
+    Wizards/Settings/dbwizardpage.ui \
+    Wizards/Settings/dirswizardpage.ui
 
 RESOURCES += \
     res.qrc

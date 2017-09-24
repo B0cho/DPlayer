@@ -23,9 +23,21 @@ SettingsWizard::~SettingsWizard()
     delete ui;
 }
 
-
-const QList<QDir> SettingsWizard::getPaths() const
+void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
 {
-	
-	
+
+}
+
+void SettingsWizard::on_SettingsWizard_currentIdChanged(int id)
+{
+    // if last page is going to be loaded
+    if(nextId() == -1 && currentId() != -1)
+    {
+        settingsWizardData data;
+        data.fragmentsDirectory = field("fragments").toString();
+        data.playlistsDirectory = field("playlists").toString();
+        data.mediaDirectories = ui->dirsPage->getDirectories();
+        //
+        emit dataCompleted(data);
+    }
 }
