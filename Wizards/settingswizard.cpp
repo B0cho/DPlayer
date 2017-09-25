@@ -25,7 +25,19 @@ SettingsWizard::~SettingsWizard()
 
 void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
 {
-
+    QString label("");
+    // registry info
+    label = (results.regkeyCreated) ? "Registry key for settings created." : "Failed to create registry key";
+    ui->label_regstry->setText(label);
+    label.clear();
+    // fragments info
+    label += (QFileInfo(results.fragmentsPath).isFile()) ? "Fragments database file was created as " + results.fragmentsPath
+                                                         : "Failed to create fragments database file in provided directory!";
+    label += '\n\n';
+    // playlists info
+    label += (QFileInfo(results.playlistsPath).isFile()) ? "Playlists database file was created as " + results.playlistsPath
+                                                         : "Failed to create playlists database file in provided directory!";
+    ui->label_databases->setText(label);
 }
 
 void SettingsWizard::on_SettingsWizard_currentIdChanged(int id)

@@ -32,6 +32,7 @@ private:
     QDateTime _lastDate, _creationDate;
     QList<QDir> _paths;
 	bool _init;
+    settingsWizardFeedback feedback;
 
     // methods
 	

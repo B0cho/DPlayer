@@ -10,29 +10,6 @@ CSettings::~CSettings()
 	saveSettings(true);
 }
 
-/*
-void CSettings::Init()
-{
-    // checking whether register key exists
-    if(!_reg.contains(creationdate))
-	{
-		// creating wizard
-		SettingsWizard wiz;
-		if(wiz.exec())
-		{
-			// reading user input
-
-            _creationDate = _lastDate = QDateTime::currentDateTime();
-			// READING PATHS
-			
-            // saving data to registry
-            //saveSettings();
-            // creating dbs
-            //emit createDBs(QFileInfo("wtf", playlists), QFileInfo("wtf", fragments));
-        } else _init = false;
-    } else readSettings();
-}
-*/
 void CSettings::Init()
 {
     // checking whether register key exists
@@ -93,13 +70,18 @@ void CSettings::DBsLoadResult(const bool playlists, const bool fragments)
 
 void CSettings::DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments)
 {
-
+    feedback.fragmentsPath = playlists.absoluteFilePath();
+    feedback.playlistsPath = fragments.absoluteFilePath();
 }
 
 void CSettings::wizardData(settingsWizardData data)
 {
-    settingsWizardFeedback feedback;
     _init = true;
-
+    _creationDate = QDateTime::currentDateTime();
+    // saving to registry
+    saveSettings();
+    feedback.regkeyCreated = true;
+    // creating database
+    emit createDBs(QFileInfo(data.playlistsDirectory), QFileInfo(data.fragmentsDirectory));
     emit wizardDataProcessed(feedback);
 }
