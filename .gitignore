@@ -1,5 +1,7 @@
 # C++ objects and libs
 
+*.html
+*.index
 *.slo
 *.lo
 *.o

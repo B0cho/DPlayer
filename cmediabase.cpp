@@ -10,13 +10,13 @@ CMediaBase::~CMediaBase()
 
 }
 
-bool CMediaBase::loadDatabases(const QFileInfo playlists, const QFileInfo fragments)
+bool CMediaBase::loadDatabase(const QFileInfo database_path)
 {
 
 
 }
 
-bool CMediaBase::createDatabases(const QFileInfo playlists, const QFileInfo fragments)
+bool CMediaBase::createDatabase(const QFileInfo database_path)
 {
 
 }

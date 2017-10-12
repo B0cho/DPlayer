@@ -30,9 +30,6 @@
  *  \li Directories page
  * \row
  *  \li QWizardPage
- *  \li Youtube account page
- * \row
- *  \li QWizardPage
  *  \li \l {finish_page} {Finish page}
  * \endtable
  * where first and last are nested in wizard QML.
@@ -106,12 +103,9 @@ void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
     ui->label_regstry->setText(label);
     label.clear();
     // fragments info
-    label += (QFileInfo(results.fragmentsPath).isFile()) ? "Fragments database file was created as " + results.fragmentsPath
-                                                         : "Failed to create fragments database file in provided directory!";
+    label += (QFileInfo(results.databasePath).isFile()) ? "Database file was created as " + results.databasePath
+                                                         : "Failed to create database file in provided directory!";
     label += "\n\n";
-    // playlists info
-    label += (QFileInfo(results.playlistsPath).isFile()) ? "Playlists database file was created as " + results.playlistsPath
-                                                         : "Failed to create playlists database file in provided directory!";
     ui->label_databases->setText(label);
 }
 
@@ -129,8 +123,7 @@ void SettingsWizard::on_SettingsWizard_currentIdChanged(int id)
     if(nextId() == -1 && id != -1)
     {
         settingsWizardData data;
-        data.fragmentsDirectory = field("fragments").toString();
-        data.playlistsDirectory = field("playlists").toString();
+        data.databaseDirectory = field("database").toString();
         data.mediaDirectories = ui->dirsPage->getDirectories();
         //
         emit dataCompleted(data);

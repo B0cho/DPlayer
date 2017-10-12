@@ -143,10 +143,10 @@
   </widget>
   <widget class="dbWizardPage" name="dbPage">
    <property name="title">
-    <string>Databases first!</string>
+    <string>Database first!</string>
    </property>
    <property name="subTitle">
-    <string>Browse for directories to create following databases:</string>
+    <string>DziobakPlayer uses SQLite3 database to store your preferences!</string>
    </property>
   </widget>
   <widget class="dirsWizardPage" name="dirsPage">
@@ -157,14 +157,6 @@
     <string>Browse for directories where your media is:</string>
    </property>
   </widget>
-  <widget class="QWizardPage" name="ytPage">
-   <property name="title">
-    <string>Youtube</string>
-   </property>
-   <property name="subTitle">
-    <string>Have Youtube account?</string>
-   </property>
-  </widget>
   <widget class="QWizardPage" name="finishPage">
    <property name="title">
     <string>Finally!</string>
@@ -173,7 +165,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>-40</y>
+      <y>-10</y>
       <width>361</width>
       <height>171</height>
      </rect>

@@ -11,8 +11,7 @@ class SettingsWizard;
 
 struct settingsWizardData
 {
-    QString fragmentsDirectory;
-    QString playlistsDirectory;
+    QString databaseDirectory;
     QList<QString> mediaDirectories;
     QPair<QString, QString> ytData;
     //
@@ -21,8 +20,7 @@ struct settingsWizardData
 struct settingsWizardFeedback
 {
     bool regkeyCreated;
-    QString playlistsPath;
-    QString fragmentsPath;
+    QString databasePath;
     //
 };
 

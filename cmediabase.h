@@ -15,22 +15,21 @@ public:
 	~CMediaBase();
 	
 	// methods
-    const bool isPlaylists() const;
-    const bool isFragments() const;
+    const bool isLoaded() const;
 	// members
 	
 private:
 	// members
-    QFileInfo _playlistsFile, _fragmentsFile;
-    QSqlDatabase _playlistsDb, _fragmentsDb;
+    QFileInfo _databaseFile;
+    QSqlDatabase _playlistsDb;
 	
 public slots:
-    bool loadDatabases(const QFileInfo playlists, const QFileInfo fragments);
-    bool createDatabases(const QFileInfo playlists, const QFileInfo fragments);
+    bool loadDatabase(const QFileInfo database_path);
+    bool createDatabase(const QFileInfo database_path);
 	
 signals:
-    void DatabasesLoaded(const bool playlists, const bool fragments) const;
-    void DatabasesCreated(const QFileInfo playlists, const QFileInfo fragments) const;
+    void DatabaseLoaded(const bool database_loaded) const;
+    void DatabaseCreated(const QFileInfo database_created) const;
 
 };
 

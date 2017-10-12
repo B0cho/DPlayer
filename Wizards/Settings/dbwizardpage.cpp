@@ -9,8 +9,7 @@
   \chapter Fields
   It has following \b {fields}:
   \list
-    \li fragments
-    \li playlists
+    \li database
    \endlist
   */
 
@@ -23,8 +22,7 @@ dbWizardPage::dbWizardPage(QWidget *parent) :
 {
     ui->setupUi(this);
     // registering fields
-    registerField("fragments", ui->lineEdit_fragments);
-    registerField("playlists", ui->lineEdit_playlists);
+    registerField("database", ui->lineEdit_database);
 }
 
 /*!
@@ -42,34 +40,15 @@ dbWizardPage::~dbWizardPage()
  */
 bool dbWizardPage::isComplete() const
 {
-    return ((!ui->groupBox_fragments->isChecked() || !ui->lineEdit_fragments->text().isEmpty()) &&
-            (!ui->groupBox_playlists->isChecked() || !ui->lineEdit_playlists->text().isEmpty())) ? true : false;
+    return (!ui->groupBox_database->isChecked() || !ui->lineEdit_database->text().isEmpty()) ? true : false;
 }
 
 /*!
  * \brief Clears \c playlist field if unchecked.
  */
-void dbWizardPage::on_groupBox_playlists_clicked(bool checked)
+void dbWizardPage::on_groupBox_database_clicked(bool checked)
 {
-    if(!checked) ui->lineEdit_playlists->clear();
-    emit completeChanged();
-}
-
-/*!
- * \brief Clears \c fragments field if unchecked.
- */
-void dbWizardPage::on_groupBox_fragments_clicked(bool checked)
-{
-    if(!checked) ui->lineEdit_fragments->clear();
-    emit completeChanged();
-}
-
-/*!
- * \brief Triggered when \c fragments lineEdit was changed.
- * In order to provide data validation.
- */
-void dbWizardPage::on_lineEdit_fragments_textChanged(const QString &arg1)
-{
+    if(!checked) ui->lineEdit_database->clear();
     emit completeChanged();
 }
 
@@ -77,7 +56,7 @@ void dbWizardPage::on_lineEdit_fragments_textChanged(const QString &arg1)
  * \brief Triggered when \c playlists lineEdit was changed.
  * In order to provide data validation.
  */
-void dbWizardPage::on_lineEdit_playlists_textChanged(const QString &arg1)
+void dbWizardPage::on_lineEdit_database_textChanged(const QString &arg1)
 {
     emit completeChanged();
 }
@@ -85,19 +64,10 @@ void dbWizardPage::on_lineEdit_playlists_textChanged(const QString &arg1)
 /*!
  * \brief Opens browser for searching where \c playlists database should be created.
  */
-void dbWizardPage::on_pushButton_playlistsBrowse_clicked()
+void dbWizardPage::on_pushButton_databaseBrowse_clicked()
 {
     // open file browser
-    ui->lineEdit_playlists->setText(getMusicDirectory());
-}
-
-/*!
- * \brief Opens browser for searching where \c fragments database should be created.
- */
-void dbWizardPage::on_pushButton_fragmentsBrowse_clicked()
-{
-    // open file browser
-    ui->lineEdit_fragments->setText(getMusicDirectory());
+    ui->lineEdit_database->setText(getMusicDirectory());
 }
 
 /*!

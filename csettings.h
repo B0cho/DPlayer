@@ -32,6 +32,7 @@ private:
     QDateTime _lastDate;
     QDateTime _creationDate;
     QList<QDir> _paths;
+    QFileInfo _databasePath;
 	bool _init;
     settingsWizardFeedback feedback;
 
@@ -42,19 +43,17 @@ private:
 	database = "database",
 	lastdate = "opened",
 	creationdate = "created",
-    paths = "paths",
-    playlists = "playlistsDB",
-    fragments = "fragmentsDB";
+    paths = "paths";
 	
 signals:
     void wizardDataProcessed(const settingsWizardFeedback) const;
-    void createDBs(const QFileInfo playlists, const QFileInfo fragments) const;
-    void loadDBs(const QFileInfo playlists, const QFileInfo fragments) const;
+    void createDBs(const QFileInfo database) const;
+    void loadDBs(const QFileInfo database) const;
 
 private slots:
     void wizardData(settingsWizardData data);
-    void DBsLoadResult(const bool playlists, const bool fragments);
-    void DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments);
+    void DBsLoadResult(const bool database_loaded);
+    void DBsCreateResult(const QFileInfo database_path);
 
 public slots:    
 	void saveSettings(const bool exit = false);

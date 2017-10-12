@@ -20,12 +20,9 @@ public:
 
 private slots:
 
-    void on_groupBox_playlists_clicked(bool checked);
-    void on_groupBox_fragments_clicked(bool checked);
-    void on_lineEdit_fragments_textChanged(const QString &arg1);
-    void on_lineEdit_playlists_textChanged(const QString &arg1);
-    void on_pushButton_playlistsBrowse_clicked();
-    void on_pushButton_fragmentsBrowse_clicked();
+    void on_groupBox_database_clicked(bool checked);
+    void on_lineEdit_database_textChanged(const QString &arg1);
+    void on_pushButton_databaseBrowse_clicked();
 
 private:
     Ui::dbWizardPage *ui;

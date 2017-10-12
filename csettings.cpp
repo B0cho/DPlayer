@@ -96,7 +96,7 @@ void CSettings::saveSettings(const bool exit)
 	// dates and dbase
     _reg.setValue(creationdate, _creationDate);
     _reg.setValue(lastdate, _lastDate);
-
+    _reg.setValue(database, _databasePath.absoluteFilePath());
 	// paths
 	_reg.beginWriteArray(paths);
 	for(int i = 0; i < _paths.size(); i++)
@@ -124,7 +124,7 @@ void CSettings::readSettings()
 	const int size = _reg.beginReadArray(paths);
     for(int i = 0; i < size; i++) _paths.append(_reg.value(paths).toString());
     // loading db
-    emit loadDBs(QFileInfo(_reg.value(playlists).toString()), QFileInfo(_reg.value(fragments).toString()));
+    emit loadDBs(QFileInfo(_reg.value(database).toString()));
 }
 
 /*!
@@ -141,7 +141,7 @@ void CSettings::clearRegKeys()
  * \b {Parameters:} \i{playlists, fragments}
  */
 
-void CSettings::DBsLoadResult(const bool playlists, const bool fragments)
+void CSettings::DBsLoadResult(const bool database_loaded)
 {
 
 }
@@ -153,10 +153,9 @@ void CSettings::DBsLoadResult(const bool playlists, const bool fragments)
  * \warning If no database was created, pass \b empty QFileInfo!
  */
 
-void CSettings::DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments)
+void CSettings::DBsCreateResult(const QFileInfo database_path)
 {
-    feedback.fragmentsPath = playlists.absoluteFilePath();
-    feedback.playlistsPath = fragments.absoluteFilePath();
+    feedback.databasePath = database_path.absoluteFilePath();
 }
 
 /*!
@@ -174,7 +173,7 @@ void CSettings::wizardData(settingsWizardData data)
     saveSettings();
     feedback.regkeyCreated = true;
     // creating database
-    emit createDBs(QFileInfo(data.playlistsDirectory), QFileInfo(data.fragmentsDirectory));
+    emit createDBs(QFileInfo(data.databaseDirectory));
     emit wizardDataProcessed(feedback);
 }
 
