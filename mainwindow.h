@@ -30,7 +30,7 @@ private:
 
     // key names
 private slots:
-    void settingsWizardInit();
+
 
 };
 

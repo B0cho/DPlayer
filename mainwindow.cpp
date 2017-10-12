@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // connections
     connect(settings, SIGNAL(launchSettingsWizard()), this, SLOT(settingsWizardInit()));
     // settings init
-    settings->Init(QCoreApplication::organizationName().toUpper(), QCoreApplication::applicationName().toUpper());
+    settings->Init();
 
 
 
@@ -19,17 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    if(settings) delete settings;
-
-}
-
-void MainWindow::settingsWizardInit()
-{
-    SettingsWizard* w = new SettingsWizard(this);
-    w->exec();
-    // get data and launch settings set up
 
 
 }
+
+
 
