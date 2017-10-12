@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/wizards/init">
+        <file alias="pendo">Res/pendo.png</file>
+        <file alias="pepe">Res/pepe.png</file>
+    </qresource>
+</RCC>

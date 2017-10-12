@@ -1,0 +1,26 @@
+project = DziobakPlayer
+description = User-customized media player
+
+outputdir   = ./html
+outputformats = HTML
+HTML.templatedir = .
+HTML.postheader = \
+"<header>"\
+"<h1>DziobakPlayer</h1>"\
+"<h3>User-custom media player - A first C++11 Qt project</h3>"\
+"</header>"\
+"<div class = "content">"\
+
+HTML.footer = "</div><footer><h3>DziobakPlayer 1.0</h3><p><b>Made by Bocho</b></p></footer>"
+HTML.stylesheets = styles.css
+HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/styles.css\">"
+
+
+
+headerdirs  = ../
+sourcedirs  = ../
+
+sources.fileextensions = "*.cpp *.qdoc *.mm *.qml"
+headers.fileextensions = "*.h *.ch *.h++ *.hh *.hpp *.hxx"
+
+

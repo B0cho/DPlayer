@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QString>
-#include <QUrl>
+#include <QDir>
 #include <QDateTime>
 #include <QVariant>
 #include <QList>
@@ -28,10 +28,12 @@ public:
 private:
     // members
     QSettings _reg;
-    QUrl _lastdir, _DBdir;
-    QDateTime _lastDate, _creationDate;
-	QList<QUrl> _paths;
+    QFileInfo _lastpath;
+    QDateTime _lastDate;
+    QDateTime _creationDate;
+    QList<QDir> _paths;
 	bool _init;
+    settingsWizardFeedback feedback;
 
     // methods
 	
@@ -40,15 +42,21 @@ private:
 	database = "database",
 	lastdate = "opened",
 	creationdate = "created",
-	paths = "paths";
+    paths = "paths",
+    playlists = "playlistsDB",
+    fragments = "fragmentsDB";
 	
 signals:
+    void wizardDataProcessed(const settingsWizardFeedback) const;
+    void createDBs(const QFileInfo playlists, const QFileInfo fragments) const;
+    void loadDBs(const QFileInfo playlists, const QFileInfo fragments) const;
 
+private slots:
+    void wizardData(settingsWizardData data);
+    void DBsLoadResult(const bool playlists, const bool fragments);
+    void DBsCreateResult(const QFileInfo playlists, const QFileInfo fragments);
 
-
-public slots:
-	void changeDBdir(const QUrl dir);
-	void setLast();
+public slots:    
 	void saveSettings(const bool exit = false);
 	void readSettings();
 	void clearRegKeys();
