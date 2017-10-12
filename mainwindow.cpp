@@ -1,6 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+/*!
+  \class MainWindow
+  \brief Class for app main window
+  \inmodule Initialization
+  Contain all necessary members to hold data and state.
+
+  */
+
+/*!
+ * \brief MainWindow::MainWindow
+ * Default class constructor- inits UI, but also settings and media base, binds all proper signals and slots between components.
+ * \sa CSettings
+ * \sa CMediaBase
+ */
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -23,12 +37,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
 }
 
+/*!
+ * \brief Default destructor
+ * */
+
 MainWindow::~MainWindow()
 {
 
 
 }
 
+/*!
+ * \brief MainWindow::DBErrorNotify
+ *
+ *
+ */
 void MainWindow::DBErrorNotify(const bool loaded, const QFileInfo localisation) const
 {
 	if(!loaded)

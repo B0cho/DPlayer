@@ -5,27 +5,25 @@
 #include <QDir>
 #include <QFileInfo>
 
-/*
-COMPLETE WIZARD PAGES AND METHODS
-CHECK PROPER WORK
-*/
-
 namespace Ui {
 class SettingsWizard;
 }
 
 struct settingsWizardData
 {
-    QString fragmentsDirectory, playlistsDirectory;
+    QString fragmentsDirectory;
+    QString playlistsDirectory;
     QList<QString> mediaDirectories;
     QPair<QString, QString> ytData;
+    //
 };
 
 struct settingsWizardFeedback
 {
     bool regkeyCreated;
-    QString playlistsPath, fragmentsPath;
-
+    QString playlistsPath;
+    QString fragmentsPath;
+    //
 };
 
 class SettingsWizard : public QWizard
@@ -33,20 +31,15 @@ class SettingsWizard : public QWizard
     Q_OBJECT
 
 public:
+    // ctor and dtor
     explicit SettingsWizard(QWidget *parent = 0);
     ~SettingsWizard();
-	
-	// methods
-
 signals:
     void dataCompleted(settingsWizardData data) const;
-
 private:
     Ui::SettingsWizard *ui;
-
 public slots:
     void wizardFeedback(const settingsWizardFeedback results);
-
 private slots:
     void on_SettingsWizard_currentIdChanged(int id);
 };

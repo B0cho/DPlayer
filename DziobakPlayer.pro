@@ -48,3 +48,8 @@ FORMS += \
 
 RESOURCES += \
     res.qrc
+
+DISTFILES += \
+    documentation.qdocconf \
+    Documentation/documentation.qdocconf \
+    Documentation/styles.css

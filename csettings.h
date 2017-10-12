@@ -29,7 +29,8 @@ private:
     // members
     QSettings _reg;
     QFileInfo _lastpath;
-    QDateTime _lastDate, _creationDate;
+    QDateTime _lastDate;
+    QDateTime _creationDate;
     QList<QDir> _paths;
 	bool _init;
     settingsWizardFeedback feedback;
