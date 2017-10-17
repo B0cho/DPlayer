@@ -5,6 +5,8 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <memory>
 
 class CMediaBase: public QObject
 {
@@ -15,17 +17,21 @@ public:
 	~CMediaBase();
 	
 	// methods
-    const bool isLoaded() const;
+    bool isLoaded() const;
 	// members
 	
 private:
 	// members
-    QFileInfo _databaseFile;
-    QSqlDatabase _playlistsDb;
+    std::unique_ptr<QSqlDatabase> _playlistsDb;
+    const QString DBfileName =  "dziobakplayerDB.db";
+
+    // methods
+    bool addDatabase(const QString path);
 	
 public slots:
-    bool loadDatabase(const QFileInfo database_path);
-    bool createDatabase(const QFileInfo database_path);
+    bool loadDatabase(QFileInfo database_path);
+    bool createDatabase(QFileInfo database_path);
+    bool clearDatabase();
 	
 signals:
     void DatabaseLoaded(const bool database_loaded) const;

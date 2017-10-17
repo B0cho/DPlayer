@@ -77,7 +77,12 @@ void CSettings::Init()
         connect(this, SIGNAL(wizardDataProcessed(settingsWizardFeedback)), &wiz, SLOT(wizardFeedback(settingsWizardFeedback)));
         wiz.exec();
         //
-    } else readSettings();
+    }
+    else
+    {
+        _init = true;
+        readSettings();
+    }
 }
 
 /*!
@@ -119,12 +124,13 @@ void CSettings::readSettings()
 	// dates and db
     _creationDate = _reg.value(creationdate).toDateTime();
     _lastDate = _reg.value(lastdate).toDateTime();
+    _databasePath = QFileInfo(_reg.value(database).toString());
 	// paths
 	_paths.clear();
 	const int size = _reg.beginReadArray(paths);
     for(int i = 0; i < size; i++) _paths.append(_reg.value(paths).toString());
     // loading db
-    emit loadDBs(QFileInfo(_reg.value(database).toString()));
+    emit loadDB(_databasePath);
 }
 
 /*!
@@ -141,9 +147,11 @@ void CSettings::clearRegKeys()
  * \b {Parameters:} \i{playlists, fragments}
  */
 
-void CSettings::DBsLoadResult(const bool database_loaded)
+void CSettings::DBLoadResult(const bool database_loaded)
 {
-
+    // failed to load database notify
+    if(!database_loaded)
+        QMessageBox::warning(qobject_cast<QWidget*>(parent()), "Database loading failed!", "Failed to load database from " + _databasePath.absoluteFilePath() + " path. It might be deleted or moved to other loaction. You can browse it in Settings.");
 }
 
 /*!
@@ -153,9 +161,13 @@ void CSettings::DBsLoadResult(const bool database_loaded)
  * \warning If no database was created, pass \b empty QFileInfo!
  */
 
-void CSettings::DBsCreateResult(const QFileInfo database_path)
+void CSettings::DBCreateResult(const QFileInfo database_path)
 {
+    // settings info for settings wizard
     feedback.databasePath = database_path.absoluteFilePath();
+    // setting database path for regkey
+    _databasePath = database_path;
+    saveSettings();
 }
 
 /*!
@@ -169,11 +181,14 @@ void CSettings::wizardData(settingsWizardData data)
 {
     _init = true;
     _creationDate = QDateTime::currentDateTime();
+    foreach (QString path, data.mediaDirectories) {
+        _paths.append(path);
+    }
     // saving to registry
     saveSettings();
     feedback.regkeyCreated = true;
     // creating database
-    emit createDBs(QFileInfo(data.databaseDirectory));
+    emit createDB(QFileInfo(data.databaseDirectory));
     emit wizardDataProcessed(feedback);
 }
 

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QString>
-#include <QDir>
+#include <QMessageBox>
 #include <QDateTime>
 #include <QVariant>
 #include <QList>
@@ -47,13 +47,13 @@ private:
 	
 signals:
     void wizardDataProcessed(const settingsWizardFeedback) const;
-    void createDBs(const QFileInfo database) const;
-    void loadDBs(const QFileInfo database) const;
+    void createDB(const QFileInfo database) const;
+    void loadDB(const QFileInfo database) const;
 
 private slots:
     void wizardData(settingsWizardData data);
-    void DBsLoadResult(const bool database_loaded);
-    void DBsCreateResult(const QFileInfo database_path);
+    void DBLoadResult(const bool database_loaded);
+    void DBCreateResult(const QFileInfo database_path);
 
 public slots:    
 	void saveSettings(const bool exit = false);

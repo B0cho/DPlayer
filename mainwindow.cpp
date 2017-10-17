@@ -24,10 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     settings = new CSettings(this);
 	base = new CMediaBase(this);
     // connections
-    connect(settings, SIGNAL(createDBs(const QFileInfo)), base, SLOT(createDatabases(const QFileInfo))); // demand to create dbs
-    connect(settings, SIGNAL(loadDBs(const QFileInfo)), base, SLOT(loadDatabases(const QFileInfo))); // demand to load dbs
-    connect(base, SIGNAL(DatabasesLoaded(const bool)), settings, SLOT(DBsLoadResult(const bool))); // notification to settings about dbs load
-    connect(base, SIGNAL(DatabasesCreated(const QFileInfo)), settings, SLOT(DBsCreateResult(const QFileInfo))); // notification to settings about dbs create
+    connect(settings, SIGNAL(createDB(const QFileInfo)), base, SLOT(createDatabase(const QFileInfo))); // demand to create dbs
+    connect(settings, SIGNAL(loadDB(const QFileInfo)), base, SLOT(loadDatabase(const QFileInfo))); // demand to load dbs
+    connect(base, SIGNAL(DatabaseLoaded(const bool)), settings, SLOT(DBLoadResult(const bool))); // notification to settings about dbs load
+    connect(base, SIGNAL(DatabaseCreated(const QFileInfo)), settings, SLOT(DBCreateResult(const QFileInfo))); // notification to settings about dbs create
     // settings init
     settings->Init();
 	

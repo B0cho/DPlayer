@@ -13,7 +13,6 @@ struct settingsWizardData
 {
     QString databaseDirectory;
     QList<QString> mediaDirectories;
-    QPair<QString, QString> ytData;
     //
 };
 
