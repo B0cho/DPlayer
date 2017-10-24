@@ -20,11 +20,13 @@ public:
     bool isLoaded() const;
 	// members
 	
+
+
 private:
-	// members
+    // members
     std::unique_ptr<QSqlDatabase> _playlistsDb;
     const QString DBfileName =  "dziobakplayerDB.db";
-
+    //std::shared_ptr<QList<QDir>> _directoriesPtr;
     // methods
     bool addDatabase(const QString path);
 	

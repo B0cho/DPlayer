@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <QVariant>
 #include <QList>
+#include <memory>
 #include "Wizards/settingswizard.h"
 
 /*
@@ -27,13 +28,12 @@ public:
 	
 private:
     // members
-    QSettings _reg;
+    std::unique_ptr<QSettings> _reg;
     QFileInfo _lastpath;
     QDateTime _lastDate;
     QDateTime _creationDate;
     QList<QDir> _paths;
     QFileInfo _databasePath;
-	bool _init;
     settingsWizardFeedback feedback;
 
     // methods

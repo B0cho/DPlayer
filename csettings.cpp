@@ -46,7 +46,7 @@
 
 CSettings::CSettings(QObject *parent) : QObject(parent)
 {
-    _init = false;
+    _reg = NULL;
 }
 
 /*!
@@ -57,6 +57,11 @@ CSettings::CSettings(QObject *parent) : QObject(parent)
 CSettings::~CSettings()
 {
 	saveSettings(true);
+    if(!_reg)
+    {
+        QSettings qs;
+        qs.clear();
+    }
 }
 
 /*!
@@ -69,7 +74,8 @@ CSettings::~CSettings()
 void CSettings::Init()
 {
     // checking whether register key exists
-    if(!_reg.contains(creationdate))
+    QSettings qs;
+    if(!qs.contains(creationdate))
     {
         // creating wizard
         SettingsWizard wiz;
@@ -80,7 +86,7 @@ void CSettings::Init()
     }
     else
     {
-        _init = true;
+        _reg = std::unique_ptr<QSettings>(new QSettings);
         readSettings();
     }
 }
@@ -95,21 +101,21 @@ void CSettings::Init()
 void CSettings::saveSettings(const bool exit)
 {
 	// if initialised
-	if(!_init) return;
+    if(!_reg) return;
 	// if app ends
     if(exit) _lastDate = QDateTime::currentDateTime();
 	// dates and dbase
-    _reg.setValue(creationdate, _creationDate);
-    _reg.setValue(lastdate, _lastDate);
-    _reg.setValue(database, _databasePath.absoluteFilePath());
+    _reg->setValue(creationdate, _creationDate);
+    _reg->setValue(lastdate, _lastDate);
+    _reg->setValue(database, _databasePath.absoluteFilePath());
 	// paths
-	_reg.beginWriteArray(paths);
+    _reg->beginWriteArray(paths);
 	for(int i = 0; i < _paths.size(); i++)
 	{
-		_reg.setArrayIndex(i);
-        _reg.setValue(paths, _paths.at(i).absolutePath());
+        _reg->setArrayIndex(i);
+        _reg->setValue(paths, _paths.at(i).absolutePath());
 	}
-	_reg.endArray();
+    _reg->endArray();
 }
 
 /*!
@@ -120,15 +126,15 @@ void CSettings::saveSettings(const bool exit)
 
 void CSettings::readSettings()
 {
-	if(!_init) return;
+    if(!_reg) return;
 	// dates and db
-    _creationDate = _reg.value(creationdate).toDateTime();
-    _lastDate = _reg.value(lastdate).toDateTime();
-    _databasePath = QFileInfo(_reg.value(database).toString());
+    _creationDate = _reg->value(creationdate).toDateTime();
+    _lastDate = _reg->value(lastdate).toDateTime();
+    _databasePath = QFileInfo(_reg->value(database).toString());
 	// paths
 	_paths.clear();
-	const int size = _reg.beginReadArray(paths);
-    for(int i = 0; i < size; i++) _paths.append(_reg.value(paths).toString());
+    const int size = _reg->beginReadArray(paths);
+    for(int i = 0; i < size; i++) _paths.append(_reg->value(paths).toString());
     // loading db
     emit loadDB(_databasePath);
 }
@@ -139,7 +145,7 @@ void CSettings::readSettings()
 
 void CSettings::clearRegKeys()
 {
-	_reg.clear();
+    _reg->clear();
 }
 
 /*!
@@ -179,7 +185,7 @@ void CSettings::DBCreateResult(const QFileInfo database_path)
 
 void CSettings::wizardData(settingsWizardData data)
 {
-    _init = true;
+    if(!_reg) _reg = std::unique_ptr<QSettings>(new QSettings);
     _creationDate = QDateTime::currentDateTime();
     foreach (QString path, data.mediaDirectories) {
         _paths.append(path);

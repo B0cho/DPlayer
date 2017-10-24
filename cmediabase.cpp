@@ -24,8 +24,6 @@
         \li Atribute name
         \li Role
     \row
-        \li rowid
-    \row
         \li TEXT - PRIMARY KEY; UNIQUE; NOT NULL
         \li path
         \li Holds path to the file. It is also used as primary key.
@@ -43,11 +41,47 @@
         \li Genre of the file.
     \endtable
     Above information are used to identify files in the system, are also used in \l asymilation.
+    \endchapter
 
     \target fragments
     \chapter TABLE fragments
     Contains all fragments created by user.
-    \note By default, every file in \l {files}{TABLE files} has one default fragment- it is
+    \note By default, every file in \l {files}{TABLE files} has one default fragment- it is representation of whole file.
+    \table
+        \header
+            \li Atribute type
+            \li Atribute name
+            \li Role
+        \row
+            \li frag_id
+            \li INT -PRIMARY KEY; UNIQUE; NOT NULL
+            \li Holds id for fragment. Used as primary key.
+        \row
+            \li file_path
+            \li TEXT - NOT NULL
+            \li Holds absolute path to the file.
+        \row
+            \li start
+            \li INT - NOT NULL
+            \li Holds a moment when fragment starts as miliseconds from file begining.
+        \row
+            \li end
+            \li INT - NOT NULL
+            \li Holds a moment when fragment ends as miliseconds from file begining.
+        \row
+            \li created
+            \li INT - NOT NULL
+            \li Holds QDateTime of fragment creation as miliseconds.
+        \row
+            \li title
+            \li TEXT - NOT NULL
+            \li Fragment title.
+        \row
+            \li desc
+            \li TEXT - NOT NULL
+            \li Fragment description.
+        \endtable
+        \endchapter
   */
 /*!
  * \brief Default constructor
@@ -146,15 +180,25 @@ bool CMediaBase::clearDatabase()
     // query
     QSqlQuery query;
     // droping tables
-    bool f;
-    f = query.exec("DROP TABLE IF EXISTS files");
+    query.exec("DROP TABLE IF EXISTS files, fragments");
     // creating table files
-    f = query.exec("CREATE TABLE files ("
+    query.exec("CREATE TABLE IF NOT EXISTS files ("
                "path TEXT NOT NULL UNIQUE,"
                "lmodified INT,"
                "fsize INT,"
                "genre TEXT,"
                "PRIMARY KEY(path))");
+    // creating table fragments
+    query.exec("CREATE TABLE IF NOT EXISTS fragments ("
+               "frag_id INT NOT NULL UNIQUE,"
+               "file_path TEXT NOT NULL,"
+               "start INT NOT NULL,"
+               "end INT NOT NULL,"
+               "created INT NOT NULL,"
+               "title TEXT NOT NULL,"
+               "desc TEXT,"
+               "PRIMARY KEY(frag_id),"
+               "FOREIGN KEY(file_path) REFERENCES files(path))");    
     // executing
     return _playlistsDb->commit();
 }
