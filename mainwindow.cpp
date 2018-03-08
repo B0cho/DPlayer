@@ -17,17 +17,18 @@
  */
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    settings(new CSettings(this)), // settings initialization
+    base(new CMediaBase(this)) // base initialization
 {
+    qDebug() << "Initializing main window..";
     ui->setupUi(this);
-    // inits
-    settings = new CSettings(this);
-	base = new CMediaBase(this);
     // connections
-    connect(settings, SIGNAL(createDB(const QFileInfo)), base, SLOT(createDatabase(const QFileInfo))); // demand to create dbs
-    connect(settings, SIGNAL(loadDB(const QFileInfo)), base, SLOT(loadDatabase(const QFileInfo))); // demand to load dbs
-    connect(base, SIGNAL(DatabaseLoaded(const bool)), settings, SLOT(DBLoadResult(const bool))); // notification to settings about dbs load
-    connect(base, SIGNAL(DatabaseCreated(const QFileInfo)), settings, SLOT(DBCreateResult(const QFileInfo))); // notification to settings about dbs create
+    qDebug() << "> Setting connections";
+    connect(settings, SIGNAL(SETT_createDB(const QFileInfo, const QList<QDir>*, const QStringList*)), base, SLOT(BASE_createDatabase(const QFileInfo, const QList<QDir>*, const QStringList*))); // demand to create dbs
+    connect(settings, SIGNAL(SETT_loadDB(const QFileInfo, const QList<QDir>*, const QStringList*)), base, SLOT(BASE_loadDatabase(const QFileInfo, const QList<QDir>*, const QStringList*))); // demand to load dbs
+    connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), settings, SLOT(SETT_DBLoadResult(const bool))); // notification to settings about dbs load
+    connect(base, SIGNAL(BASE_DatabaseCreated(const QFileInfo)), settings, SLOT(SETT_DBCreateResult(const QFileInfo))); // notification to settings about dbs create
     // settings init
     settings->Init();
 	
@@ -48,11 +49,11 @@ MainWindow::~MainWindow()
 }
 
 /*!
- * \brief MainWindow::DBErrorNotify
+ * \brief MainWindow::WIND_DBErrorNotify
  *
  *
  */
-void MainWindow::DBErrorNotify(const bool loaded, const QFileInfo localisation) const
+void MainWindow::WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const
 {
 	if(!loaded)
 	{

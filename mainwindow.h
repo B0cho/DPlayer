@@ -28,13 +28,13 @@ public:
 private:
     Ui::MainWindow *ui;
     // settings
-    CSettings* settings;
-	CMediaBase* base;
+    CSettings* const settings;
+    CMediaBase* const base;
     // members
 
     // key names
 private slots:
-	void DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
+    void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
 
 
 };

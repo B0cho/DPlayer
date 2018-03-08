@@ -4,8 +4,11 @@
 
 class CDatabaseMember
 {
+private:
+    int _id;
 public:
-    CDatabaseMember();
+    CDatabaseMember(const int id);
+    int id() const;
 };
 
 #endif // CDATABASEMEMBER_H

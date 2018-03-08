@@ -1,6 +1,11 @@
 #include "cdatabasemember.h"
 
-CDatabaseMember::CDatabaseMember()
+int CDatabaseMember::id() const
+{
+    return _id;
+}
+
+CDatabaseMember::CDatabaseMember(const int id) : _id(id)
 {
 
 }

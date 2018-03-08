@@ -1,8 +1,9 @@
 #ifndef CMEDIAPLAYLIST_H
 #define CMEDIAPLAYLIST_H
 
+#include <QMediaPlaylist>
 
-class CMediaPlaylist
+class CMediaPlaylist : public QMediaPlaylist
 {
 public:
     CMediaPlaylist();

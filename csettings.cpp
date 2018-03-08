@@ -46,17 +46,17 @@
 
 CSettings::CSettings(QObject *parent) : QObject(parent)
 {
-    _reg = NULL;
+    _reg = nullptr;
 }
 
 /*!
  * \brief Default destructor.
- * By default, should be destroyed when the app is being closed. Then, saves changes with \l saveSettings(), sending \c true argument.
+ * By default, should be destroyed when the app is being closed. Then, saves changes with \l SETT_saveRegistrySettings(), sending \c true argument.
  */
 
 CSettings::~CSettings()
 {
-	saveSettings(true);
+    SETT_saveRegistrySettings(true);
     if(!_reg)
     {
         QSettings qs;
@@ -67,27 +67,33 @@ CSettings::~CSettings()
 /*!
  * \brief Inits all the settings of the app- reads from registry, loades databases etc.
  * This method should set at very begining, right after CSettings creation. When started, checks whether \l regkey exists in registry.
- * If yes, then calls \l readSettings(). If no, creates \l SettingsWizard, connects \l dataCompleted and \l wizardDataProcessed signals
+ * If yes, then calls \l SETT_readRegistrySettings(). If no, creates \l SettingsWizard, connects \l WIZZ_dataCompleted and \l SETT_wizardDataProcessed signals
  * with \l settingsWizardData and \l settingsWizardFeedback slots. Then, shows SettingsWizard using \b exec().
  */
 
 void CSettings::Init()
 {
+    qDebug() << "Settings - Initialization";
     // checking whether register key exists
     QSettings qs;
     if(!qs.contains(creationdate))
     {
         // creating wizard
+        qDebug() << "> Welcome Wizard";
         SettingsWizard wiz;
-        connect(&wiz, SIGNAL(dataCompleted(settingsWizardData)), this, SLOT(wizardData(settingsWizardData)));
-        connect(this, SIGNAL(wizardDataProcessed(settingsWizardFeedback)), &wiz, SLOT(wizardFeedback(settingsWizardFeedback)));
+        connect(&wiz, SIGNAL(WIZZ_dataCompleted(settingsWizardData)), this, SLOT(SETT_wizardData(settingsWizardData)));
+        connect(this, SIGNAL(SETT_wizardDataProcessed(settingsWizardFeedback)), &wiz, SLOT(WIZZ_wizardFeedback(settingsWizardFeedback)));
+        qDebug() << ">> Setting connections to Wizard";
+        qDebug() << ">> Launching:";
         wiz.exec();
-        //
     }
     else
     {
+        // standard reading
+        qDebug() << "> Standard reading settings";
         _reg = std::unique_ptr<QSettings>(new QSettings);
-        readSettings();
+        SETT_readRegistrySettings();
+        qDebug() << ">> SETT_readRegistrySettings sent";
     }
 }
 
@@ -98,23 +104,51 @@ void CSettings::Init()
  * If yes, saves \l _lastDate (which is updated), \l _creationDate and \l _paths.
  */
 
-void CSettings::saveSettings(const bool exit)
+void CSettings::SETT_saveRegistrySettings(const bool exit)
 {
-	// if initialised
-    if(!_reg) return;
+    qDebug() << "SETT_saveRegistrySettings fired";
+    // if initialised
+    if(!_reg)
+    {
+        qDebug () << "> Registry saving not allowed. Return.";
+        return;
+    }
 	// if app ends
-    if(exit) _lastDate = QDateTime::currentDateTime();
+    if(exit)
+    {
+        qDebug() << "> Exitting app.";
+        _lastDate = QDateTime::currentDateTime();
+    }
 	// dates and dbase
     _reg->setValue(creationdate, _creationDate);
     _reg->setValue(lastdate, _lastDate);
     _reg->setValue(database, _databasePath.absoluteFilePath());
+    qDebug() << "> Dates saved to registry.";
 	// paths
+    qDebug() << "> Saving paths:";
     _reg->beginWriteArray(paths);
 	for(int i = 0; i < _paths.size(); i++)
 	{
         _reg->setArrayIndex(i);
-        _reg->setValue(paths, _paths.at(i).absolutePath());
+        auto path =  _paths.at(i).absolutePath();
+        _reg->setValue(paths, path);
+        qDebug() << path;
 	}
+    _reg->endArray();
+    // extensions
+    qDebug() << "> Saving extensions:";
+    _reg->beginWriteArray(extensions);
+    for(auto i = 0; i < _extens.size(); i++)
+    {
+        _reg->setArrayIndex(i);
+        auto ext = _extens.at(i);
+        _reg->setValue(extensions, ext);
+        qDebug() << ext;
+    }
+
+    foreach (auto i, _extens) {
+        qDebug() << i;
+    }
     _reg->endArray();
 }
 
@@ -124,26 +158,51 @@ void CSettings::saveSettings(const bool exit)
  * At the end emits \l loadDBs signal, in order to load \l {playlistsDatabase}{playlists} and \l {fragmentsDatabase}{fragments} databases.
  */
 
-void CSettings::readSettings()
+void CSettings::SETT_readRegistrySettings()
 {
-    if(!_reg) return;
-	// dates and db
+    qDebug() << "SETT_readRegistrySettings fired";
+    if(!_reg)
+    {
+        qDebug() << "> No registry set. Return.";
+        return;
+    }
+    // loading dates and db
     _creationDate = _reg->value(creationdate).toDateTime();
     _lastDate = _reg->value(lastdate).toDateTime();
     _databasePath = QFileInfo(_reg->value(database).toString());
-	// paths
+    qDebug() << "> Dates loaded from registry";
+    // loading paths
+    qDebug() << "> Loading paths from registry:";
 	_paths.clear();
-    const int size = _reg->beginReadArray(paths);
-    for(int i = 0; i < size; i++) _paths.append(_reg->value(paths).toString());
+    int size = _reg->beginReadArray(paths);
+    for(int i = 0; i < size; ++i)
+    {
+        _reg->setArrayIndex(i);
+        _paths.append(QDir(_reg->value(paths).toString()));
+        qDebug() << _paths.last().absolutePath();
+    }
+    _reg->endArray();
+    // loading extensions
+    qDebug() << "> Loading extensions from registry:";
+    _extens.clear();
+    size = _reg->beginReadArray(extensions);
+    for(auto i = 0; i < size; i++)
+    {
+        _reg->setArrayIndex(i);
+        _extens.append(_reg->value(extensions).toString());
+        qDebug() << _extens.last();
+    }
+    _reg->endArray();
     // loading db
-    emit loadDB(_databasePath);
+    emit SETT_loadDB(_databasePath, &_paths, &_extens);
+    qDebug() << "SETT_loadDB sent";
 }
 
 /*!
  * \brief Nothing but erasing \l regkey from local registry.
  */
 
-void CSettings::clearRegKeys()
+void CSettings::SETT_clearRegSettingsKeys()
 {
     _reg->clear();
 }
@@ -153,7 +212,7 @@ void CSettings::clearRegKeys()
  * \b {Parameters:} \i{playlists, fragments}
  */
 
-void CSettings::DBLoadResult(const bool database_loaded)
+void CSettings::SETT_DBLoadResult(const bool database_loaded)
 {
     // failed to load database notify
     if(!database_loaded)
@@ -167,35 +226,37 @@ void CSettings::DBLoadResult(const bool database_loaded)
  * \warning If no database was created, pass \b empty QFileInfo!
  */
 
-void CSettings::DBCreateResult(const QFileInfo database_path)
+void CSettings::SETT_DBCreateResult(const QFileInfo database_path)
 {
     // settings info for settings wizard
     feedback.databasePath = database_path.absoluteFilePath();
     // setting database path for regkey
     _databasePath = database_path;
-    saveSettings();
+    SETT_saveRegistrySettings();
 }
 
 /*!
  * \brief Slot, which settingsWizard communicates with
  * \b {Parameters:} \i{data} - collected from \l SettingsWizard
  * When this slot is triggered, passed \c data is being used to create playlists and fragments databases-
- * \l createDBs is emitted, and after that \l wizardDataProcessed to set \l feedback for \l settingsWizard.
+ * \l createDBs is emitted, and after that \l SETT_wizardDataProcessed to set \l feedback for \l settingsWizard.
  */
 
-void CSettings::wizardData(settingsWizardData data)
+void CSettings::SETT_wizardData(settingsWizardData data)
 {
+    // creating registry
     if(!_reg) _reg = std::unique_ptr<QSettings>(new QSettings);
     _creationDate = QDateTime::currentDateTime();
+    // saving paths from Wizard
     foreach (QString path, data.mediaDirectories) {
         _paths.append(path);
     }
     // saving to registry
-    saveSettings();
+    SETT_saveRegistrySettings();
     feedback.regkeyCreated = true;
     // creating database
-    emit createDB(QFileInfo(data.databaseDirectory));
-    emit wizardDataProcessed(feedback);
+    emit SETT_createDB(QFileInfo(data.databaseDirectory), &_paths, &_extens);
+    emit SETT_wizardDataProcessed(feedback);
 }
 
 /*!
@@ -207,6 +268,6 @@ void CSettings::wizardData(settingsWizardData data)
  * This signal should be emitted when databases reading is required.
  * */
 /*!
- * \fn CSettings::wizardDataProcessed(const settingsWizardFeedback) const
+ * \fn CSettings::SETT_wizardDataProcessed(const settingsWizardFeedback) const
  * Emitted, when data from \l SettingsWizard was processed. Sends results as \l settingsWizardFeedback to \l SettingsWizard.
  * */

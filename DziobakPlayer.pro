@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui sql multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,7 +30,11 @@ SOURCES += \
     Wizards/settingswizard.cpp \
     cmediabase.cpp \
     Wizards/Settings/dbwizardpage.cpp \
-    Wizards/Settings/dirswizardpage.cpp
+    Wizards/Settings/dirswizardpage.cpp \
+    cmediafile.cpp \
+    cmediafragment.cpp \
+    cdatabasemember.cpp \
+    cmediaplaylist.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -38,7 +42,11 @@ HEADERS += \
     Wizards/settingswizard.h \
     cmediabase.h \
     Wizards/Settings/dbwizardpage.h \
-    Wizards/Settings/dirswizardpage.h
+    Wizards/Settings/dirswizardpage.h \
+    cmediafile.h \
+    cmediafragment.h \
+    cdatabasemember.h \
+    cmediaplaylist.h
 
 FORMS += \
         mainwindow.ui \

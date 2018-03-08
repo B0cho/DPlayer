@@ -8,12 +8,9 @@
 #include <QDateTime>
 #include <QVariant>
 #include <QList>
+#include <QDebug>
 #include <memory>
 #include "Wizards/settingswizard.h"
-
-/*
-CHECK PROPER WORKING
-*/
 
 class CSettings : public QObject
 {
@@ -33,6 +30,7 @@ private:
     QDateTime _lastDate;
     QDateTime _creationDate;
     QList<QDir> _paths;
+    QStringList _extens = {"*.mp3", "*.mp4"}; // default extensions
     QFileInfo _databasePath;
     settingsWizardFeedback feedback;
 
@@ -43,22 +41,23 @@ private:
 	database = "database",
 	lastdate = "opened",
 	creationdate = "created",
-    paths = "paths";
+    paths = "paths",
+    extensions = "extensions";
 	
 signals:
-    void wizardDataProcessed(const settingsWizardFeedback) const;
-    void createDB(const QFileInfo database) const;
-    void loadDB(const QFileInfo database) const;
+    void SETT_wizardDataProcessed(const settingsWizardFeedback) const;
+    void SETT_createDB(const QFileInfo database, const QList<QDir>* directories, const QStringList* extensions) const;
+    void SETT_loadDB(const QFileInfo database, const QList<QDir>* directories, const QStringList* extensions) const;
 
 private slots:
-    void wizardData(settingsWizardData data);
-    void DBLoadResult(const bool database_loaded);
-    void DBCreateResult(const QFileInfo database_path);
+    void SETT_wizardData(settingsWizardData data);
+    void SETT_DBLoadResult(const bool database_loaded);
+    void SETT_DBCreateResult(const QFileInfo database_path);
 
 public slots:    
-	void saveSettings(const bool exit = false);
-	void readSettings();
-	void clearRegKeys();
+    void SETT_saveRegistrySettings(const bool exit = false);
+    void SETT_readRegistrySettings();
+    void SETT_clearRegSettingsKeys();
 };
 
 #endif // CSETTINGS_H

@@ -1,6 +1,6 @@
 #include "cmediaplaylist.h"
 
-CMediaPlaylist::CMediaPlaylist()
+CMediaPlaylist::CMediaPlaylist() : QMediaPlaylist()
 {
 
 }

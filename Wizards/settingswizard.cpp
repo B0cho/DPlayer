@@ -40,14 +40,14 @@
  * Thanks to data routing with slots and signals, is completely separated from its host.
  * Right after settingsWizard creation, two \b {signals and slots} pairs must be connected:
  * \list
- *  \li \l {dataCompleted(settingsWizardData data)} signal
- *  \li \l {wizardFeedback(const settingsWizardFeedback results)} slot
+ *  \li \l {WIZZ_dataCompleted(settingsWizardData data)} signal
+ *  \li \l {WIZZ_wizardFeedback(const settingsWizardFeedback results)} slot
  * \endlist
  * Data exchange is provided through \l settingsWizardData and \l settingsWizardFeedback structs.
  * \sa settingsWizardData
  * \sa settingsWizardFeedback
  * \note To process wizard, use \b {exec()}.
- * If user closes wizard using \c Cancel, no \l dataCompleted(settingsWizardData data) signal is emitted.
+ * If user closes wizard using \c Cancel, no \l WIZZ_dataCompleted(settingsWizardData data) signal is emitted.
  *
  * \target intro_page
  * \chapter Intro Page
@@ -55,7 +55,7 @@
  *
  * \target finish_page
  * \chapter Finish page
- * This page contains several QLabels- their content is adjusted by \l wizardFeedback slot, depending on \a feedback it takes.
+ * This page contains several QLabels- their content is adjusted by \l WIZZ_wizardFeedback slot, depending on \a feedback it takes.
  * Stored in SettingsWizard QML, informs user about result of operations of creating \l {playlistsDatabase} and/or \l {fragmentsDatabase} and so on.
  */
 
@@ -67,6 +67,7 @@ SettingsWizard::SettingsWizard(QWidget *parent) :
     QWizard(parent),
     ui(new Ui::SettingsWizard)
 {
+    qDebug() << "Initializing Wizard";
     ui->setupUi(this);
     // setting fixed size
     setFixedSize(width(), height());
@@ -95,8 +96,9 @@ SettingsWizard::~SettingsWizard()
  * normally as descriptions sent to page labels.
  */
 
-void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
+void SettingsWizard::WIZZ_wizardFeedback(const settingsWizardFeedback results)
 {
+    qDebug() << "WIZZ_wizardFeedback fired";
     QString label("");
     // registry info
     label = (results.regkeyCreated) ? "Registry key for settings created." : "Failed to create registry key";
@@ -111,7 +113,7 @@ void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
 
 /*!
  * This slot is executed at every page change demand.
- * It's role is to check whether \l {finish_page} {last page} is going to be load and if so, emits \l {SettingsWizard::dataCompleted(settingsWizardData data)}{dataCompleted(settingsWizardData) signal}
+ * It's role is to check whether \l {finish_page} {last page} is going to be load and if so, emits \l {SettingsWizard::WIZZ_dataCompleted(settingsWizardData data)}{WIZZ_dataCompleted(settingsWizardData) signal}
  * with data prvided to wizard, stored in \l settingsWizardData struct.
  *
  * \sa slot
@@ -120,17 +122,18 @@ void SettingsWizard::wizardFeedback(const settingsWizardFeedback results)
 void SettingsWizard::on_SettingsWizard_currentIdChanged(int id)
 {
     // if last page is going to be loaded
+    qDebug() << "on_SettingsWizard_currentIdChanged fired";
     if(nextId() == -1 && id != -1)
     {
         settingsWizardData data;
         data.databaseDirectory = field("database").toString();
         data.mediaDirectories = ui->dirsPage->getDirectories();
         //
-        emit dataCompleted(data);
+        emit WIZZ_dataCompleted(data);
     }
 }
 /*!
-  \fn SettingsWizard::dataCompleted(settingsWizardData data) const
+  \fn SettingsWizard::WIZZ_dataCompleted(settingsWizardData data) const
   This signal is emitted when user clicks \c Next button at page that is just before \l {finish_page}{finish page} and passess collected \c data.
   \sa settingsWizardData
  */
@@ -142,20 +145,20 @@ void SettingsWizard::on_SettingsWizard_currentIdChanged(int id)
   \sa SettingsWizard
   \sa settingsWizardFeedback
   \l SettingsWizard uses two structs to exchange data with its host in order to provide \b {wizard - host} isolation.
-  When user has provided all required data, \l SettingsWizard emits \l {SettingsWizard::dataCompleted(settingsWizardData data)}{dataCompleted(settingsWizardData) signal}, which takes an argument of described type.
+  When user has provided all required data, \l SettingsWizard emits \l {SettingsWizard::WIZZ_dataCompleted(settingsWizardData data)}{WIZZ_dataCompleted(settingsWizardData) signal}, which takes an argument of described type.
   The struct has following members:
   */
 /*!
   \variable settingsWizardData::fragmentsDirectory
   \brief This member holds directory where \l {fragmentsDatabase}{fragments database} should be created.
   By default, \b empty \a fragmentsDirectory means that no database should be created.
-  \sa SettingsWizard::dataCompleted
+  \sa SettingsWizard::WIZZ_dataCompleted
   */
 /*!
   \variable settingsWizardData::playlistsDirectory
   This member holds directory where \l {playlistsDatabase}{playlists database} should be created.
   By default, \b empty \a playlistsDirectory means that no database should be created.
-  \sa SettingsWizard::dataCompleted
+  \sa SettingsWizard::WIZZ_dataCompleted
 */
 /*!
   \variable settingsWizardData::mediaDirectories

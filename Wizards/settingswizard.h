@@ -4,6 +4,7 @@
 #include <QWizard>
 #include <QDir>
 #include <QFileInfo>
+#include <QDebug>
 
 namespace Ui {
 class SettingsWizard;
@@ -32,11 +33,11 @@ public:
     explicit SettingsWizard(QWidget *parent = 0);
     ~SettingsWizard();
 signals:
-    void dataCompleted(settingsWizardData data) const;
+    void WIZZ_dataCompleted(settingsWizardData data) const;
 private:
     Ui::SettingsWizard *ui;
 public slots:
-    void wizardFeedback(const settingsWizardFeedback results);
+    void WIZZ_wizardFeedback(const settingsWizardFeedback results);
 private slots:
     void on_SettingsWizard_currentIdChanged(int id);
 };
