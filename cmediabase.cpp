@@ -111,21 +111,21 @@ bool CMediaBase::BASE_loadDatabase(const QFileInfo database_path, const QList<QD
     // checking whether file exists
     if(!database_path.exists() || !database_path.isReadable())
     {
-        qDebug() << "> Base file not found or not readable. Return.";
+        qDebug() << "> Data base file not found or not readable.";
         emit BASE_DatabaseLoaded(false);
         return false;
     }
     // validation
-    qDebug() << "> Validation";
+    qDebug() << "> Loading Database file:";
     bool flag = addDatabase(database_path.absoluteFilePath());
     qDebug() << ">> Database adding: " << flag;
-    flag = flag && validateDb();
+    flag = flag && validateDatabaseFile();
     qDebug() << ">> Database validation: " << flag;
     // assigning dirs
     _directoriesPtr = dirs;
     _extensions = extensions;
     // reloading data from database and directories
-    BASE_reload();
+    flag = BASE_reload();
     // feedback
     emit BASE_DatabaseLoaded(flag);
     qDebug() << "BASE_DatabaseLoaded sent";
@@ -167,9 +167,20 @@ bool CMediaBase::isLoaded() const
     return _database != NULL && _database->isOpen();
 }
 
+CMediaFile* CMediaBase::newMediaFile(const QFileInfo file_info) const
+{
+    if(!file_info.exists()) return nullptr;
+    CMediaFile* file;
+    file = new CMediaFile(_files->last().id(), file_info);
+    return file;
+}
+
 bool CMediaBase::BASE_reload(bool save)
 {
+    qDebug() << "Reloading database";
+    // loading data
     auto flag = loadData();
+    // saving to database if necessary
     if(save) flag = flag && saveData();
     emit BASE_DatabaseReloaded(flag);
     return flag;
@@ -182,7 +193,13 @@ bool CMediaBase::BASE_reload(bool save)
  */
 bool CMediaBase::addDatabase(const QString path)
 {
-    if(_database && _database->isOpen()) return true;
+    qDebug() << "Adding database";
+    if(_database && _database->isOpen())
+    {
+        qDebug() << "> Database is already opened. Return";
+        return true;
+    }
+    qDebug() << "> Opening database...";
     _database = std::unique_ptr<QSqlDatabase>(new QSqlDatabase);
     *_database = QSqlDatabase::addDatabase("QSQLITE");
     _database->setHostName("host");
@@ -193,20 +210,31 @@ bool CMediaBase::addDatabase(const QString path)
 }
 
 /*!
- * \brief CMediaBase::validateDb
+ * \brief CMediaBase::validateDatabaseFile
  * Checks if declared database has required three tables to store media data.
  * \return \c True, if validation of Database was succesful. \c False is returned otherwise.
  */
-bool CMediaBase::validateDb() const
+bool CMediaBase::validateDatabaseFile() const
 {
-    if(!isLoaded()) return false;
-    QSqlQuery query;
-    QStringList res, names({"files", "fragments", "playlists"});
-    query.exec("SELECT name FROM sqlite_master WHERE type = 'table'");
-    while(query.next()) res.append(query.value(0).toString());
-    foreach (QString s, names) {
-        if(!res.contains(s)) return false;
+    qDebug() << "Validating database file";
+    if(!isLoaded())
+    {
+        qDebug() << "> Database is not loaded. Return.";
+        return false;
     }
+    QSqlQuery query;
+    QStringList content, names({"files", "fragments", "playlists"});
+    qDebug() << "> Executing query: " <<
+                query.exec("SELECT name FROM sqlite_master WHERE type = 'table'");
+    while(query.next()) content.append(query.value(0).toString());
+    foreach (QString s, names) {
+        if(!content.contains(s))
+        {
+            qDebug() << "> Database has no essential table: " << s << " Return.";
+            return false;
+        }
+    }
+    qDebug() << "> Validation OK.";
     return true;
 }
 
@@ -216,14 +244,21 @@ bool CMediaBase::validateDb() const
  */
 bool CMediaBase::loadData()
 {
-    if(!isLoaded()) return false;
+    qDebug() << "Loading data from database:";
+    if(!isLoaded())
+    {
+        qDebug() << "> Database is not loaded. Return.";
+        return false;
+    }
     QSqlQuery query;
     // files
     loadFiles(&query);
     // fragments
-    loadFragments(&query);
+    qDebug() << "Loading fragments: " <<
+                loadFragments(&query);
     // playlists
-    loadPlaylists(&query);
+    qDebug() << "Loading files: " <<
+                loadPlaylists(&query);
 
 
 
@@ -231,12 +266,14 @@ bool CMediaBase::loadData()
     return true;
 }
 
+
 /*!
  * \brief CMediaBase::loadFiles
  * \return
  */
 QFileInfoList CMediaBase::getFilesList(const QFlags<QDir::Filter> filters) const
 {
+    // Preparing list of files
     QFileInfoList list;
     foreach (auto i, *_directoriesPtr) {
         list.append(i.entryInfoList(*_extensions, filters));
@@ -260,14 +297,17 @@ bool CMediaBase::saveData()
  */
 bool CMediaBase::clearDatabase()
 {
+    qDebug() << "Clearing database";
     // opening transaction
     if(!isLoaded() || !_database->transaction()) return false;
     // query
     QSqlQuery query;
     // droping tables
-    query.exec("DROP TABLE IF EXISTS files, fragments, playlists");
+    qDebug() << "> Dropping table: " <<
+                query.exec("DROP TABLE IF EXISTS files, fragments, playlists");
     // creating table files
-    query.exec("CREATE TABLE IF NOT EXISTS files ("
+    qDebug() << "> Creating files table: " <<
+                query.exec("CREATE TABLE IF NOT EXISTS files ("
                "file_id INT NOT NULL UNIQUE,"
                "path TEXT NOT NULL UNIQUE,"
                "lmodified INT,"
@@ -275,7 +315,8 @@ bool CMediaBase::clearDatabase()
                "genre TEXT,"
                "PRIMARY KEY(path))");
     // creating table fragments
-    query.exec("CREATE TABLE IF NOT EXISTS fragments ("
+    qDebug() << "> Creating fragments table: " <<
+                query.exec("CREATE TABLE IF NOT EXISTS fragments ("
                "frag_id INT NOT NULL UNIQUE,"
                "file INT NOT NULL,"
                "start INT NOT NULL,"
@@ -286,51 +327,81 @@ bool CMediaBase::clearDatabase()
                "PRIMARY KEY(frag_id),"
                "FOREIGN KEY(file) REFERENCES files(file_id))");
     // creating table playlists
-    query.exec("CREATE TABLE IF NOT EXISTS playlists ("
+    qDebug() << "> Creating playlists table: " <<
+                query.exec("CREATE TABLE IF NOT EXISTS playlists ("
                "playlist_id INT NOT NULL UNIQUE,"
                "title TEXT NOT NULL,"
                "descr TEXT,"
                "PRIMARY KEY(playlist_id))");
     // executing
+    qDebug() << "> Committing changes.";
     return _database->commit();
 }
 
 void CMediaBase::loadFiles(QSqlQuery *query)
 {
-    qDebug() << "Loading FILES";
+    qDebug() << "Loading Files from Database";
     // loading strings of files in user's directories
-    auto y = _directoriesPtr->constFirst();
-    auto dirs = getFilesList();
+    auto filesList = getFilesList();
+    //qDebug() << filesList;
     query->exec("SELECT * FROM files");
+    // building file objects basing on Database
+    CMediaFile* file;
     while(query->next())
     {
+        // lets assume that everything is ok
         bool flag = true;
-        CMediaFile* file;
+        // try to create a file object basing on database
         try
         {
+            // getting date of file modification (creation)
             QDateTime created;
             created.setMSecsSinceEpoch(query->value(3).toInt());
-            file = new CMediaFile(query->value(0).toInt(),
-                            query->value(1).toString(),
-                            query->value(2).toInt(),
-                            created,
-                            query->value(4).toString());
+            file = new CMediaFile(query->value(0).toInt(), // file id
+                            query->value(1).toString(), // file path
+                            query->value(2).toInt(), // file size
+                            created, // date of modification
+                            query->value(4).toString()); // genre
+            qDebug() << "> Considering file: " << file;
         }
         catch(EMediaFileError e)
         {
-            if(e == INVALID) flag = asimilation(file, dirs);
+            // if file description from database is not compliant with files list, then asimilate
+            if(e == INVALID) flag = asimilation(file, filesList);
                 else continue;
             // in case of adding signals about problems
         }
+        // when file object is ok and is located in Directories, then add it to Files
         if(flag && std::any_of(_directoriesPtr->cbegin(), _directoriesPtr->cend(),
-                               [&file](const QDir d)->auto{ return  file->file().absoluteFilePath().contains(d.absolutePath()); }))
+                               [&file](const QDir directory)->auto{ return  file->file().absoluteFilePath().contains(directory.absolutePath()); }))
+        {
             _files->append(*file);
+            // remove *file from filesList
+            filesList.removeAll(file->file());
+            qDebug() << ">> File added to Files list";
+        }
+        // delete file, as it was copied to to list or not used
         delete file;
     }
-    qDebug() << "FILES loaded";
+    // adding remaining files from filesList to _files
+    foreach (auto i, filesList) {
+        file = newMediaFile(i);
+        if(file)
+        {
+            _files->append(*file);
+            delete file;
+        }
+        /*
+        auto id = _files->last().id() + 1;
+
+
+        _files->append(new CMediaFile(id, i.absoluteFilePath(), ));
+        */
+    }
+    qDebug() << "> Files loaded";
 }
 
-void CMediaBase::loadFragments(QSqlQuery *query)
+bool CMediaBase::loadFragments(QSqlQuery *query)
 {
     // fragments
     qDebug() << "Loading FRAGMENTS";
@@ -360,7 +431,7 @@ void CMediaBase::loadFragments(QSqlQuery *query)
     qDebug() << "FRAGMENTS loaded";
 }
 
-void CMediaBase::loadPlaylists(QSqlQuery *query)
+bool CMediaBase::loadPlaylists(QSqlQuery *query)
 {
     // playlists
     query->exec("SELECT * FROM playlists");

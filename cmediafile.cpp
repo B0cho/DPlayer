@@ -9,6 +9,12 @@ CMediaFile::CMediaFile(const int id, const QString file_path, const qint64 file_
 
 }
 
+CMediaFile::CMediaFile(const int id, const QFileInfo file_info)
+    : CDatabaseMember(id), _file(file_info)
+{
+    /// do
+}
+
 QFileInfo CMediaFile::file() const
 {
     return _file;

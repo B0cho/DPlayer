@@ -16,6 +16,7 @@ class CMediaFile : public CDatabaseMember
 {
 public:
     CMediaFile(const int id, const QString file_path, const qint64 file_size, const QDateTime created, const QString file_genre = "");
+    CMediaFile(const int id, const QFileInfo file_info);
     QFileInfo file() const;
 
 private:
