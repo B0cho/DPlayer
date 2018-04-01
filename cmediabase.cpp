@@ -89,6 +89,8 @@
 CMediaBase::CMediaBase(QObject *parent): QObject(parent)
 {
     //
+    _fragments = std::unique_ptr<CMFragmentsQList>(new CMFragmentsQList);
+    _playlists = std::unique_ptr<CMPlaylistQList>(new CMPlaylistQList);
 }
 
 /*!
@@ -96,7 +98,11 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
  */
 CMediaBase::~CMediaBase()
 {
-    if(isLoaded()) _database->close();
+    if(isLoaded())
+    {
+        BASE_saveData();
+        _database->close();
+    }
 }
 
 /*!
@@ -121,11 +127,15 @@ bool CMediaBase::BASE_loadDatabase(const QFileInfo database_path, const QList<QD
     qDebug() << ">> Database adding: " << flag;
     flag = flag && validateDatabaseFile();
     qDebug() << ">> Database validation: " << flag;
-    // assigning dirs
-    _directoriesPtr = dirs;
-    _extensions = extensions;
-    // reloading data from database and directories
-    flag = BASE_reload();
+    // if not failed to open or validate db
+    if(flag)
+    {
+        // assigning dirs
+        _directoriesPtr = dirs;
+        _extensions = extensions;
+        // reloading data from database and directories
+        flag = BASE_reload();
+    }
     // feedback
     emit BASE_DatabaseLoaded(flag);
     qDebug() << "BASE_DatabaseLoaded sent";
@@ -154,6 +164,10 @@ bool CMediaBase::BASE_createDatabase(const QFileInfo database_path, const QList<
     _extensions = extensions;
     // sets database structure
     if(flag) clearDatabase();
+    // load playlists and files
+    QSqlQuery query;
+    loadPlaylists(&query);
+    loadFragments(&query);
     emit BASE_DatabaseCreated( (flag) ? path : QString("") );
     return flag;
 }
@@ -167,12 +181,63 @@ bool CMediaBase::isLoaded() const
     return _database != NULL && _database->isOpen();
 }
 
-CMediaFile* CMediaBase::newMediaFile(const QFileInfo file_info) const
+CMediaFragment* CMediaBase::newMediaFile(const QFileInfo file_info) const
 {
     if(!file_info.exists()) return nullptr;
-    CMediaFile* file;
-    file = new CMediaFile(_files->last().id(), file_info);
+    CMediaFragment* file;
+    file = new CMediaFragment((!_fragments->empty()) ? _fragments->last().id() + 1 : 0, file_info);
+    // setting default values
+    file->setStart(0);
+    file->setEnd(100);
+    file->setDesc("Default");
+    file->setTitle("Default");
+    // add fragment to default playlist
     return file;
+}
+
+bool CMediaBase::saveFragment(const CMediaFragment *fragment)
+{
+    if(!isLoaded() || !_database->transaction()) return false;
+    QSqlQuery query;
+    qDebug() << "> Updating fragment:";
+    qDebug() << ">> id: " << fragment->id() << " path: " << fragment->file().absoluteFilePath();
+    int fragId = fragment->id();
+    // seeking for playlist
+    auto playlist = std::find_if(_playlists->cbegin(), _playlists->cend(),
+                                 [&fragment](CMediaPlaylist playlist)->bool{ return playlist.getPosition(fragment) != 0; });
+    if(playlist == _playlists->cend()) return false; // when playlist was not found do not save
+    // doing shit because of QT bug ;//
+    QString prepare = "INSERT OR REPLACE INTO fragments (frag_id, path, created, fsize, title, start, end, desc, playlist, playlist_pos)"
+                      " VALUES (:id, \":path\", :created, :fsize, \":title\", :start, :end, \":desc\", :playlist, :pos)";
+    prepare.replace(QString(":id"), QString::number(fragId));
+    prepare.replace(QString(":path"), fragment->file().absoluteFilePath());
+    prepare.replace(QString(":created"), QString::number(fragment->file().created().toSecsSinceEpoch()));
+    prepare.replace(QString(":fsize"), QString::number(fragment->file().size()));
+    prepare.replace(QString(":start"), QString::number(fragment->start()));
+    prepare.replace(QString(":end"), QString::number(fragment->end()));
+    prepare.replace(QString(":playlist"), QString::number(playlist->id()));
+    prepare.replace(QString(":pos"), QString::number(playlist->getPosition(fragment)));
+    prepare.replace(QString(":title"), playlist->title);
+    prepare.replace(QString(":desc"), playlist->description);
+    query.exec(prepare);
+    query.finish();
+    return _database->commit();
+}
+
+bool CMediaBase::savePlaylist(const CMediaPlaylist *playlist)
+{
+    if(!isLoaded() || !_database->transaction()) return false;
+    QSqlQuery query;
+    qDebug() << "> Updating playlist:";
+    qDebug() << ">> id: " << playlist->id() << " path: " << playlist->title;
+    // doing shit because of QT bug ;//
+    QString prepare = "INSERT OR REPLACE INTO playlists (playlist_id, title, desc) VALUES (:id, \":title\", \":desc\")";
+    prepare.replace(QString(":id"), QString::number(playlist->id()));
+    prepare.replace(QString(":title"), playlist->title);
+    prepare.replace(QString(":desc"), playlist->description);
+    query.exec(prepare);
+    query.finish();
+    return _database->commit();
 }
 
 bool CMediaBase::BASE_reload(bool save)
@@ -181,7 +246,7 @@ bool CMediaBase::BASE_reload(bool save)
     // loading data
     auto flag = loadData();
     // saving to database if necessary
-    if(save) flag = flag && saveData();
+    if(save) flag = flag && BASE_saveData();
     emit BASE_DatabaseReloaded(flag);
     return flag;
 }
@@ -223,7 +288,7 @@ bool CMediaBase::validateDatabaseFile() const
         return false;
     }
     QSqlQuery query;
-    QStringList content, names({"files", "fragments", "playlists"});
+    QStringList content, names({"fragments", "playlists"});
     qDebug() << "> Executing query: " <<
                 query.exec("SELECT name FROM sqlite_master WHERE type = 'table'");
     while(query.next()) content.append(query.value(0).toString());
@@ -251,18 +316,8 @@ bool CMediaBase::loadData()
         return false;
     }
     QSqlQuery query;
-    // files
-    loadFiles(&query);
-    // fragments
-    qDebug() << "Loading fragments: " <<
-                loadFragments(&query);
-    // playlists
-    qDebug() << "Loading files: " <<
-                loadPlaylists(&query);
-
-
-
-
+    loadPlaylists(&query);
+    loadFragments(&query);
     return true;
 }
 
@@ -286,9 +341,23 @@ QFileInfoList CMediaBase::getFilesList(const QFlags<QDir::Filter> filters) const
  * \brief CMediaBase::saveDb
  * \return
  */
-bool CMediaBase::saveData()
+bool CMediaBase::BASE_saveData()
 {
-
+    qDebug() << "Saving data to Database:";
+    bool fragmentsflag = true, playlistsflag = true;
+    qDebug() << "> Playlists:";
+    for(auto i = _playlists->cbegin() + 1; i < _playlists->cend(); i++)
+    {
+        if(!savePlaylist(&*i)) playlistsflag = false;
+        qDebug() << ">> " << i->title;
+    }
+    qDebug() << "> Fragments:";
+    for(auto i = _fragments->cbegin(); i < _fragments->cend(); i++)
+    {
+        if(!saveFragment(&*i)) fragmentsflag = false;
+        qDebug() << ">> " << i->title();
+    }
+    return fragmentsflag && playlistsflag;
 }
 
 /*!
@@ -304,157 +373,141 @@ bool CMediaBase::clearDatabase()
     QSqlQuery query;
     // droping tables
     qDebug() << "> Dropping table: " <<
-                query.exec("DROP TABLE IF EXISTS files, fragments, playlists");
-    // creating table files
-    qDebug() << "> Creating files table: " <<
-                query.exec("CREATE TABLE IF NOT EXISTS files ("
-               "file_id INT NOT NULL UNIQUE,"
-               "path TEXT NOT NULL UNIQUE,"
-               "lmodified INT,"
-               "fsize INT,"
-               "genre TEXT,"
-               "PRIMARY KEY(path))");
+                query.exec("DROP TABLE IF EXISTS fragments, playlists");
     // creating table fragments
     qDebug() << "> Creating fragments table: " <<
                 query.exec("CREATE TABLE IF NOT EXISTS fragments ("
-               "frag_id INT NOT NULL UNIQUE,"
-               "file INT NOT NULL,"
-               "start INT NOT NULL,"
-               "end INT NOT NULL,"
+               "frag_id INTEGER NOT NULL UNIQUE,"
+               "path TEXT NOT NULL,"
                "created INT NOT NULL,"
+               "fsize INT NOT NULL,"
                "title TEXT NOT NULL,"
+               "start INT NOT NULL,"
+               "end INT NOT NULL,"               
                "desc TEXT,"
+               "playlist INT NOT NULL,"
+               "playlist_pos INT NOT NULL,"
                "PRIMARY KEY(frag_id),"
-               "FOREIGN KEY(file) REFERENCES files(file_id))");
+               "FOREIGN KEY(playlist) REFERENCES playlists(playlists_id))");
     // creating table playlists
     qDebug() << "> Creating playlists table: " <<
                 query.exec("CREATE TABLE IF NOT EXISTS playlists ("
                "playlist_id INT NOT NULL UNIQUE,"
                "title TEXT NOT NULL,"
-               "descr TEXT,"
+               "desc TEXT,"
                "PRIMARY KEY(playlist_id))");
     // executing
     qDebug() << "> Committing changes.";
     return _database->commit();
 }
 
-void CMediaBase::loadFiles(QSqlQuery *query)
+void CMediaBase::loadFragments(QSqlQuery *query)
 {
-    qDebug() << "Loading Files from Database";
+    qDebug() << "Loading Fragments from Database";
     // loading strings of files in user's directories
     auto filesList = getFilesList();
-    //qDebug() << filesList;
-    query->exec("SELECT * FROM files");
+    // qDebug() << filesList;
+    query->exec("SELECT * FROM fragments");
     // building file objects basing on Database
-    CMediaFile* file;
+    CMediaFragment* file;
     while(query->next())
     {
         // lets assume that everything is ok
         bool flag = true;
-        // try to create a file object basing on database
+        const auto id = query->value(0).toInt(); // file id
+        const auto path = query->value(1).toString(); // file path
+        const auto size = query->value(3).toInt();  // file size
+        // getting date of file modification (creation)
+        quint64 created = query->value(2).toInt(); // date of modification
+        // try to create a fragment object basing on database
         try
-        {
-            // getting date of file modification (creation)
-            QDateTime created;
-            created.setMSecsSinceEpoch(query->value(3).toInt());
-            file = new CMediaFile(query->value(0).toInt(), // file id
-                            query->value(1).toString(), // file path
-                            query->value(2).toInt(), // file size
-                            created, // date of modification
-                            query->value(4).toString()); // genre
-            qDebug() << "> Considering file: " << file;
+        {            
+            file = new CMediaFragment(id, path, created, size);
+            qDebug() << "> Considering file: " << file->file().absoluteFilePath();
         }
-        catch(EMediaFileError e)
+        catch(EMediaFragmentError e)
         {
             // if file description from database is not compliant with files list, then asimilate
-            if(e == INVALID) flag = asimilation(file, filesList);
+            if(e == INVALID) flag = asimilation(file, id, size, created, filesList);
                 else continue;
+            if(!flag) continue; // if asimilation was not successful
             // in case of adding signals about problems
         }
+        // filling remaining data
+        file->setStart(query->value(5).toInt()); // fragment start
+        file->setEnd(query->value(6).toInt()); // fragment end
+        file->setTitle(query->value(4).toString()); // fragment title
+        file->setDesc(query->value(7).toString()); // fragment description
+        // adding to playlist
+        int playlist_id = query->value(8).toInt(); // playlist id
+        int playlist_pos = query->value(9).toInt(); // position on playlist
+        // look for playlist of provided id
+        auto playlist = std::find_if(_playlists->begin(), _playlists->end(),
+                                 [&playlist_id](auto list)->bool{ return playlist_id == list.id(); });
         // when file object is ok and is located in Directories, then add it to Files
-        if(flag && std::any_of(_directoriesPtr->cbegin(), _directoriesPtr->cend(),
-                               [&file](const QDir directory)->auto{ return  file->file().absoluteFilePath().contains(directory.absolutePath()); }))
+        if(playlist != _playlists->end() && flag && std::any_of(_directoriesPtr->cbegin(), _directoriesPtr->cend(),
+                               [&file](const QDir directory)->bool{ return  file->file().absoluteFilePath().contains(directory.absolutePath()); }))
         {
-            _files->append(*file);
+            _fragments->append(*file);
+            playlist->addFragment(&_fragments->back(), playlist_pos);
             // remove *file from filesList
             filesList.removeAll(file->file());
-            qDebug() << ">> File added to Files list";
+            qDebug() << ">> Fragment added to Fragments list";
         }
         // delete file, as it was copied to to list or not used
         delete file;
     }
     // adding remaining files from filesList to _files
+    qDebug() << "> Adding remaining or newly found files:";
     foreach (auto i, filesList) {
         file = newMediaFile(i);
         if(file)
         {
-            _files->append(*file);
+            // file
+            qDebug() << ">> " << file->file().absoluteFilePath();
+            _fragments->append(*file);
+            // first, default playlist
+            CMediaPlaylist& default_playlist = _playlists->first(); // getting first playlist - default
+            int position = default_playlist.size() + 1; // setting position for fragment
+            default_playlist.addFragment(&_fragments->last(), position); // adding
             delete file;
         }
-        /*
-        auto id = _files->last().id() + 1;
-
-
-        _files->append(new CMediaFile(id, i.absoluteFilePath(), ));
-        */
     }
-    qDebug() << "> Files loaded";
-}
-
-bool CMediaBase::loadFragments(QSqlQuery *query)
-{
-    // fragments
-    qDebug() << "Loading FRAGMENTS";
-    _fragments = std::unique_ptr<QList<CMediaFragment>>(new QList<CMediaFragment>);
-    query->exec("SELECT * FROM fragments");
-    while(query->next())
-    {
-        // getting file id
-        int foreign_FileId = query->value(1).toInt();
-        // getting pointer to file
-        auto fl = std::find_if(_files->cbegin(), _files->cend(),
-                [&foreign_FileId](const CMediaFile f)->auto{ return foreign_FileId == f.id(); });
-        // if pointer was found
-        if(fl != _files->constEnd())
-        {
-            QDateTime created;
-            created.setMSecsSinceEpoch(query->value(4).toInt());
-            _fragments->append(CMediaFragment(query->value(0).toInt(),
-                               &*fl,
-                               QTime(0, 0, 0, query->value(2).toInt()),
-                               QTime(0, 0, 0, query->value(3).toInt()),
-                               created,
-                               query->value(5).toString(),
-                               query->value(6).toString()));
-        }
-    }
-    qDebug() << "FRAGMENTS loaded";
+    qDebug() << "> Fragments loaded";
 }
 
 bool CMediaBase::loadPlaylists(QSqlQuery *query)
 {
     // playlists
+    qDebug() << "Loading playlists";
+    // creating default playlist of all fragments
+    _playlists->append(CMediaPlaylist(0, "Wszystkie utwory", "Wszystkie utwory"));
+    qDebug() << "> Default playlists added";
+    // getting playlists from db
     query->exec("SELECT * FROM playlists");
-    QList<int> ids;
-    while(query->next()) ids.append(query->value(0).toInt());
-    foreach (auto i, ids) {
-        query->prepare("SELECT * FROM ?");
-        query->addBindValue(i);
-        query->exec();
+    while (query->next()) {
+        auto playlist = CMediaPlaylist(query->value(0).toInt(), query->value(1).toString(), query->value(2).toString());
+        if(!playlist.id()) continue; // if first playlist then continue
+        qDebug() << ">> Considering playlist: " << playlist.title;
+        _playlists->append(playlist);
     }
-
-
-
-
     qDebug() << "PLAYLISTS loaded";
 }
-
 
 /*!
  * \brief CMediaBase::asimilation
  */
-bool CMediaBase::asimilation(CMediaFile* file, const QFileInfoList& dirs) const
+bool CMediaBase::asimilation(CMediaFragment* file, const int& id, const int& size, const quint64 created, const QFileInfoList& dirs) const
 {
-
+    // find file
+    auto newFile = std::find_if(dirs.cbegin(), dirs.cend(),
+                                [&size, &created](QFileInfo file)->bool{ return size == file.size() && created == file.created().currentSecsSinceEpoch(); });
+    // insert it to new file or return false
+    if(newFile == dirs.cend()) return false;
+    else
+    {
+        file = new CMediaFragment(id, *newFile);
+        return true;
+    }
 }
 

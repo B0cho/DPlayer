@@ -31,10 +31,9 @@ SOURCES += \
     cmediabase.cpp \
     Wizards/Settings/dbwizardpage.cpp \
     Wizards/Settings/dirswizardpage.cpp \
-    cmediafile.cpp \
-    cmediafragment.cpp \
     cdatabasemember.cpp \
-    cmediaplaylist.cpp
+    cmediaplaylist.cpp \
+    cmediafragment.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,10 +42,9 @@ HEADERS += \
     cmediabase.h \
     Wizards/Settings/dbwizardpage.h \
     Wizards/Settings/dirswizardpage.h \
-    cmediafile.h \
-    cmediafragment.h \
     cdatabasemember.h \
-    cmediaplaylist.h
+    cmediaplaylist.h \
+    cmediafragment.h
 
 FORMS += \
         mainwindow.ui \

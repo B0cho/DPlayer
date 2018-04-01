@@ -145,10 +145,6 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
         _reg->setValue(extensions, ext);
         qDebug() << ext;
     }
-
-    foreach (auto i, _extens) {
-        qDebug() << i;
-    }
     _reg->endArray();
 }
 
