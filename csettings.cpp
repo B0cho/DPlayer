@@ -97,6 +97,26 @@ void CSettings::Init()
     }
 }
 
+QPoint CSettings::windowPos() const
+{
+    return _windowPos;
+}
+
+void CSettings::setWindowPos(const QPoint &windowPos)
+{
+    _windowPos = windowPos;
+}
+
+QSize CSettings::windowSize() const
+{
+    return _windowSize;
+}
+
+void CSettings::setWindowSize(const QSize &windowSize)
+{
+    _windowSize = windowSize;
+}
+
 /*!
  * \brief Used to save settings to registry and databases.
  * \a exit - \c true, when app is going to be closed. By default \c false.
@@ -114,6 +134,11 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
         return;
     }
 	// if app ends
+    // update info about window
+    qDebug() << "> SETT_update fired";
+    emit SETT_update();
+    // wait for SETT_update slots to finish and continue
+    //
     if(exit)
     {
         qDebug() << "> Exitting app.";
@@ -124,6 +149,7 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
     _reg->setValue(lastdate, _lastDate);
     _reg->setValue(database, _databasePath.absoluteFilePath());
     qDebug() << "> Dates saved to registry.";
+
 	// paths
     qDebug() << "> Saving paths:";
     _reg->beginWriteArray(paths);
@@ -135,6 +161,7 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
         qDebug() << path;
 	}
     _reg->endArray();
+
     // extensions
     qDebug() << "> Saving extensions:";
     _reg->beginWriteArray(extensions);
@@ -146,6 +173,13 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
         qDebug() << ext;
     }
     _reg->endArray();
+
+    // window settings
+    qDebug() << "> Saving properties of main window";
+    _reg->beginGroup(mainWindow);
+    _reg->setValue("size", windowSize());
+    _reg->setValue("pos", windowPos());
+    _reg->endGroup();
 }
 
 /*!
@@ -157,16 +191,19 @@ void CSettings::SETT_saveRegistrySettings(const bool exit)
 void CSettings::SETT_readRegistrySettings()
 {
     qDebug() << "SETT_readRegistrySettings fired";
+    // if registy was not set
     if(!_reg)
     {
         qDebug() << "> No registry set. Return.";
         return;
     }
+
     // loading dates and db
     _creationDate = _reg->value(creationdate).toDateTime();
     _lastDate = _reg->value(lastdate).toDateTime();
     _databasePath = QFileInfo(_reg->value(database).toString());
     qDebug() << "> Dates loaded from registry";
+
     // loading paths
     qDebug() << "> Loading paths from registry:";
 	_paths.clear();
@@ -178,6 +215,7 @@ void CSettings::SETT_readRegistrySettings()
         qDebug() << _paths.last().absolutePath();
     }
     _reg->endArray();
+
     // loading extensions
     qDebug() << "> Loading extensions from registry:";
     _extens.clear();
@@ -189,6 +227,14 @@ void CSettings::SETT_readRegistrySettings()
         qDebug() << _extens.last();
     }
     _reg->endArray();
+
+    // loading main window properties
+    qDebug() << "> Loading properties of main window";
+    _reg->beginGroup(mainWindow);
+    setWindowPos(_reg->value("pos", QPoint(200, 200)).toPoint());
+    setWindowSize(_reg->value("size", QSize(500, 500)).toSize());
+    _reg->endGroup();
+
     // loading db
     emit SETT_loadDB(_databasePath, &_paths, &_extens);
     qDebug() << "SETT_loadDB sent";

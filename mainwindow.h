@@ -33,8 +33,9 @@ private:
     // members
 
     // key names
-private slots:
+public slots:
     void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
+    void WIND_updateSettings();
 
 
 };
