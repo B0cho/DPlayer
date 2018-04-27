@@ -90,7 +90,8 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
 {
     //
     _fragments = std::unique_ptr<CMFragmentsQList>(new CMFragmentsQList);
-    _playlists = std::unique_ptr<CMPlaylistQList>(new CMPlaylistQList);
+    _playlists = boost::shared_ptr<CMPlaylistQList>(new CMPlaylistQList);
+    _playlistsModel = boost::shared_ptr<CPlaylistsModel>(new CPlaylistsModel(_playlists));
 }
 
 /*!
@@ -335,6 +336,11 @@ QFileInfoList CMediaBase::getFilesList(const QFlags<QDir::Filter> filters) const
     }
     std::unique(list.begin(), list.end());
     return list;
+}
+
+boost::shared_ptr<CPlaylistsModel> CMediaBase::getPlaylistsModel() const
+{
+    return _playlistsModel;
 }
 
 /*!

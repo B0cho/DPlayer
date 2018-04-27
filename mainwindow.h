@@ -30,7 +30,8 @@ private:
     // settings
     CSettings* const settings;
     CMediaBase* const base;
-    // members
+    // MODELS
+    //boost::shared_ptr<CPlaylistsModel> _playlistModel;
 
     // key names
 public slots:

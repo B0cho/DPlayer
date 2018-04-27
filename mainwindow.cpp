@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     qDebug() << "Initializing main window..";
     ui->setupUi(this);
+
     // connections
     qDebug() << "> Setting connections";
     connect(settings, SIGNAL(SETT_createDB(const QFileInfo, const QList<QDir>*, const QStringList*)), base, SLOT(BASE_createDatabase(const QFileInfo, const QList<QDir>*, const QStringList*))); // demand to create dbs
@@ -30,13 +31,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(settings, SIGNAL(SETT_update()), this, SLOT(WIND_updateSettings())); // updating settings with window parameters
     connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), settings, SLOT(SETT_DBLoadResult(const bool))); // notification to settings about dbs load
     connect(base, SIGNAL(BASE_DatabaseCreated(const QFileInfo)), settings, SLOT(SETT_DBCreateResult(const QFileInfo))); // notification to settings about dbs create
+
     // settings init
     settings->Init();
+
     // setting window properties
     move(settings->windowPos()); // setting window to last position on screen
     resize(settings->windowSize()); // setting window to last size
     setMinimumSize(settings->_minWindowSize); // setting minimum size of window
-	
+
+    // setting models
+    ui->listView_playlists->setModel(base->getPlaylistsModel().get());
 
 
 

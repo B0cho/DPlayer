@@ -12,8 +12,10 @@
 #include <QScopedPointer>
 #include <memory>
 #include <algorithm>
+#include <boost/smart_ptr.hpp>
 #include "cmediafragment.h"
 #include "cmediaplaylist.h"
+#include "cplaylistsmodel.h"
 
 // typedefs
 typedef QList<CMediaFragment> CMFragmentsQList;
@@ -37,10 +39,13 @@ public:
 
     QFileInfoList getFilesList(const QFlags<QDir::Filter> filters = QDir::Readable | QDir::Files) const;
     // returns list of files in directories basing on directories and extensions
+    boost::shared_ptr<CPlaylistsModel> getPlaylistsModel() const;
+
 private:
     // members
+    boost::shared_ptr<CPlaylistsModel> _playlistsModel;
     std::unique_ptr<CMFragmentsQList> _fragments;
-    std::unique_ptr<CMPlaylistQList> _playlists;
+    boost::shared_ptr<CMPlaylistQList> _playlists;
     std::unique_ptr<QSqlDatabase> _database;
     const QList<QDir>* _directoriesPtr;
     const QStringList* _extensions;
