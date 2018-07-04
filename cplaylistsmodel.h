@@ -1,4 +1,4 @@
-#ifndef CPLAYLISTSMODEL_H
+    #ifndef CPLAYLISTSMODEL_H
 #define CPLAYLISTSMODEL_H
 
 /// PLAYLIST MODEL
@@ -15,6 +15,9 @@ public:
     CPlaylistsModel(const boost::shared_ptr<CMPlaylistQList> playlistsPointer, QObject* parent = nullptr);
     QVariant data(const QModelIndex &index, int role) const;
     int rowCount(const QModelIndex &parent) const;
+    // editable - testing
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
 private:
     const boost::shared_ptr<CMPlaylistQList> _pointer;

@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QString>
+#include <QItemSelection> //
 #include "csettings.h"
 #include "cmediabase.h"
 
@@ -38,7 +39,9 @@ public slots:
     void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
     void WIND_updateSettings();
 
-
+private slots:
+    void WIND_enableDeleteButton(const QItemSelection deselected, const QItemSelection selected);
+    void WIND_changeFragmentsList(const QItemSelection deselected, const QItemSelection selected);
 };
 
 #endif // MAINWINDOW_H
