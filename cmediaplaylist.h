@@ -6,19 +6,27 @@
 #include <QMap>
 #include "cmediafragment.h"
 
+/// REPRESENTS PLAYLIST
 typedef QMap<int, const CMediaFragment*> CMFragmentsMap;
 class CMediaPlaylist : public CDatabaseMember
 {
 public:
+    /// ctor/dtors
     CMediaPlaylist(const int id, const QString title, const QString description);
-    void addFragment(const CMediaFragment* fragment, const int position);
-    // return size of playlist
-    int size() const;
+
+    /// methods
+    void addFragment(const CMediaFragment* fragment, const int position); // adds given fragment to given position
+    int size() const; // return size of playlist
+    int getPosition(const CMediaFragment* frag) const; // returns positions of given fragments
+    CMFragmentsMap* getList(); // returns map of fragments
+
+    /// members
     QString title;
     QString description;
-    int getPosition(const CMediaFragment* frag) const;
+
 private:
-    CMFragmentsMap _list;
+    /// members
+    CMFragmentsMap _list; // map of fragments
 
 };
 

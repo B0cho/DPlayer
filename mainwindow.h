@@ -6,10 +6,11 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QString>
-#include <QItemSelection> //
+#include <QItemSelection>
 #include "csettings.h"
 #include "cmediabase.h"
 
+/// MAIN WINDOW
 namespace Ui {
 class MainWindow;
 }
@@ -19,29 +20,24 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    // ctors
+    /// ctors dtors
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    // members
-
-
 private:
+    /// gui
     Ui::MainWindow *ui;
-    // settings
-    CSettings* const settings;
-    CMediaBase* const base;
-    // MODELS
-    //boost::shared_ptr<CPlaylistsModel> _playlistModel;
+    /// members
+    CSettings* const settings; // settings of app
+    CMediaBase* const base; // media library
 
-    // key names
 public slots:
-    void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const;
-    void WIND_updateSettings();
+    void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const; // throws notify about database file load error
+    void WIND_updateSettings(); // updates settings
 
 private slots:
-    void WIND_enableDeleteButton(const QItemSelection deselected, const QItemSelection selected);
-    void WIND_changeFragmentsList(const QItemSelection deselected, const QItemSelection selected);
+    void WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected);
+
 };
 
 #endif // MAINWINDOW_H

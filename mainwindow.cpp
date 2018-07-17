@@ -42,10 +42,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setting models
     ui->playlists_listView->setModel(base->getPlaylistsModel().get());
+    ui->fragments_listView->setModel(base->getFragmentsModel().get());
 
     // connections between models and controls
-    connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(WIND_enableDeleteButton(QItemSelection, QItemSelection)));
-    connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(WIND_changeFragmentsList(QItemSelection,QItemSelection)));
+    connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(WIND_enableDeleteButton(QItemSelection, QItemSelection))); // enabling delete button
+    connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
 
 
 
@@ -85,14 +86,10 @@ void MainWindow::WIND_updateSettings()
     settings->setWindowSize(size()); // setting current window size
 }
 
-void MainWindow::WIND_enableDeleteButton(const QItemSelection deselected, const QItemSelection selected)
+void MainWindow::WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected)
 {
     // getting first // improve - set a clear condition of All basic playlist
     auto first = ui->playlists_listView->model()->index(0, 0);
-    ui->deletePushButton->setEnabled((selected.contains(first)) ? true : false);
+    ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
 }
 
-void MainWindow::WIND_changeFragmentsList(const QItemSelection deselected, const QItemSelection selected)
-{
-    // to do
-}

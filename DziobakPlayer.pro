@@ -34,7 +34,8 @@ SOURCES += \
     cdatabasemember.cpp \
     cmediaplaylist.cpp \
     cmediafragment.cpp \
-    cplaylistsmodel.cpp
+    cplaylistsmodel.cpp \
+    cfragmentsmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +47,8 @@ HEADERS += \
     cdatabasemember.h \
     cmediaplaylist.h \
     cmediafragment.h \
-    cplaylistsmodel.h
+    cplaylistsmodel.h \
+    cfragmentsmodel.h
 
 FORMS += \
         mainwindow.ui \

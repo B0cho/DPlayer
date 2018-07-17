@@ -88,10 +88,12 @@
  */
 CMediaBase::CMediaBase(QObject *parent): QObject(parent)
 {
-    //
+    // containers initialization
     _fragments = std::unique_ptr<CMFragmentsQList>(new CMFragmentsQList);
     _playlists = boost::shared_ptr<CMPlaylistQList>(new CMPlaylistQList);
+    // models initialization
     _playlistsModel = boost::shared_ptr<CPlaylistsModel>(new CPlaylistsModel(_playlists));
+    _fragmentsModel = boost::shared_ptr<CFragmentsModel>(new CFragmentsModel);
 }
 
 /*!
@@ -188,11 +190,10 @@ CMediaFragment* CMediaBase::newMediaFile(const QFileInfo file_info) const
     CMediaFragment* file;
     file = new CMediaFragment((!_fragments->empty()) ? _fragments->last().id() + 1 : 0, file_info);
     // setting default values
-    file->setStart(0);
-    file->setEnd(100);
-    file->setDesc("Default");
-    file->setTitle("Default");
-    // add fragment to default playlist
+    file->setStart(CMediaFragment::startScope);
+    file->setEnd(CMediaFragment::endScope);
+    file->setDesc("Raw fragment");
+    file->setTitle(file_info.baseName());
     return file;
 }
 
@@ -218,8 +219,8 @@ bool CMediaBase::saveFragment(const CMediaFragment *fragment)
     prepare.replace(QString(":end"), QString::number(fragment->end()));
     prepare.replace(QString(":playlist"), QString::number(playlist->id()));
     prepare.replace(QString(":pos"), QString::number(playlist->getPosition(fragment)));
-    prepare.replace(QString(":title"), playlist->title);
-    prepare.replace(QString(":desc"), playlist->description);
+    prepare.replace(QString(":title"), fragment->title());
+    prepare.replace(QString(":desc"), fragment->desc());
     query.exec(prepare);
     query.finish();
     return _database->commit();
@@ -343,6 +344,11 @@ boost::shared_ptr<CPlaylistsModel> CMediaBase::getPlaylistsModel() const
     return _playlistsModel;
 }
 
+boost::shared_ptr<CFragmentsModel> CMediaBase::getFragmentsModel() const
+{
+    return _fragmentsModel;
+}
+
 /*!
  * \brief CMediaBase::saveDb
  * \return
@@ -364,6 +370,13 @@ bool CMediaBase::BASE_saveData()
         qDebug() << ">> " << i->title();
     }
     return fragmentsflag && playlistsflag;
+}
+
+void CMediaBase::BASE_changeFragmentsList(QItemSelection selected, QItemSelection deselected)
+{
+     const auto playlistRow = selected.indexes().first().row();
+     CMediaPlaylist& newPlaylist = (*_playlists)[playlistRow];
+    _fragmentsModel->setListPointer(newPlaylist.getList());
 }
 
 /*!
@@ -505,6 +518,7 @@ bool CMediaBase::loadPlaylists(QSqlQuery *query)
  */
 bool CMediaBase::asimilation(CMediaFragment* file, const int& id, const int& size, const quint64 created, const QFileInfoList& dirs) const
 {
+    qDebug() << "> File asimilation";
     // find file
     auto newFile = std::find_if(dirs.cbegin(), dirs.cend(),
                                 [&size, &created](QFileInfo file)->bool{ return size == file.size() && created == file.created().currentSecsSinceEpoch(); });
@@ -512,6 +526,7 @@ bool CMediaBase::asimilation(CMediaFragment* file, const int& id, const int& siz
     if(newFile == dirs.cend()) return false;
     else
     {
+        qDebug() << ">> Successful";
         file = new CMediaFragment(id, *newFile);
         return true;
     }

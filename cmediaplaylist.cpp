@@ -19,3 +19,8 @@ int CMediaPlaylist::getPosition(const CMediaFragment *frag) const
 {
     return _list.key(frag, 0);
 }
+
+CMFragmentsMap* CMediaPlaylist::getList()
+{
+    return &_list;
+}
