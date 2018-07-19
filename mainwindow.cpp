@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
 
 
-
 }
 
 /*!
@@ -88,8 +87,16 @@ void MainWindow::WIND_updateSettings()
 
 void MainWindow::WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected)
 {
-    // getting first // improve - set a clear condition of All basic playlist
+    // getting first
     auto first = ui->playlists_listView->model()->index(0, 0);
     ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
 }
 
+
+void MainWindow::on_addPushButton_clicked()
+{
+    // adding new playlist
+    qDebug() << "> Add button clicked";
+    const auto count = ui->playlists_listView->model()->rowCount(); // getting count of elements in model
+    ui->playlists_listView->model()->insertRow(count); // appending new row
+}

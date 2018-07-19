@@ -376,7 +376,7 @@ void CMediaBase::BASE_changeFragmentsList(QItemSelection selected, QItemSelectio
 {
      const auto playlistRow = selected.indexes().first().row();
      CMediaPlaylist& newPlaylist = (*_playlists)[playlistRow];
-    _fragmentsModel->setListPointer(newPlaylist.getList());
+     _fragmentsModel->setListPointer(newPlaylist.getList());
 }
 
 /*!

@@ -37,6 +37,7 @@ public slots:
 
 private slots:
     void WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected);
+    void on_addPushButton_clicked();
 
 };
 
