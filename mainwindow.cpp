@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), settings, SLOT(SETT_DBLoadResult(const bool))); // notification to settings about dbs load
     connect(base, SIGNAL(BASE_DatabaseCreated(const QFileInfo)), settings, SLOT(SETT_DBCreateResult(const QFileInfo))); // notification to settings about dbs create
 
+    /// prepare adding and removing rows in runtime
     // settings init
     settings->Init();
 
@@ -92,11 +93,34 @@ void MainWindow::WIND_enableDeleteButton(QItemSelection selected, QItemSelection
     ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
 }
 
-
 void MainWindow::on_addPushButton_clicked()
 {
     // adding new playlist
     qDebug() << "> Add button clicked";
     const auto count = ui->playlists_listView->model()->rowCount(); // getting count of elements in model
     ui->playlists_listView->model()->insertRow(count); // appending new row
+
+    /*
+    // activating last to edit
+    const auto index = ui->playlists_listView->model()->index(count, 0);
+    ui->playlists_listView->edit(index);
+    */
+}
+
+void MainWindow::on_deletePushButton_clicked()
+{
+    // deleting selected playlist
+    qDebug() << "> Delete button clicked";
+
+    // getting indexes
+    auto indexes = ui->playlists_listView->selectionModel()->selectedIndexes();
+
+    // sorting
+    std::sort(indexes.begin(), indexes.end(), [](const QModelIndex a, const QModelIndex b)->bool{ return a.row() >= b.row(); });
+
+    // removing
+    foreach (auto index, indexes) {
+        ui->playlists_listView->model()->removeRow(index.row());
+    }
+    // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
 }

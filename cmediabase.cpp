@@ -357,6 +357,12 @@ bool CMediaBase::BASE_saveData()
 {
     qDebug() << "Saving data to Database:";
     bool fragmentsflag = true, playlistsflag = true;
+
+    // delete all database playlist rows
+    QSqlQuery query;
+    query.exec("DELETE FROM playlists");
+
+    // saving
     qDebug() << "> Playlists:";
     for(auto i = _playlists->cbegin() + 1; i < _playlists->cend(); i++)
     {

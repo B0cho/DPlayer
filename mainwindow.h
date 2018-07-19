@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QString>
 #include <QItemSelection>
+#include <algorithm>
 #include "csettings.h"
 #include "cmediabase.h"
 
@@ -39,6 +40,7 @@ private slots:
     void WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected);
     void on_addPushButton_clicked();
 
+    void on_deletePushButton_clicked();
 };
 
 #endif // MAINWINDOW_H

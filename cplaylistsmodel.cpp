@@ -7,27 +7,6 @@ CPlaylistsModel::CPlaylistsModel(const boost::shared_ptr<CMPlaylistQList> playli
 
 QVariant CPlaylistsModel::data(const QModelIndex &index, int role) const
 {
-    /*
-    switch (role) {
-    case Qt::DisplayRole:
-        // label
-        if(!index.isValid() || index.row()) return QVariant();
-        else return _pointer->at(index.row()).title;
-        break;
-    case Qt::EditRole:
-        // label
-        if(!index.isValid() || index.row()) return QVariant();
-        else return _pointer->at(index.row()).title;
-        break;
-    case Qt::ToolTipRole:
-        // hint
-        return _pointer->at(index.row()).description;
-        break;
-    default:
-        return QVariant();
-        break;
-    }
-    */
     // if there is smth wrong with index
     if(!index.isValid() || index.row() >= _pointer->size())
         return QVariant();
@@ -95,6 +74,22 @@ bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
+bool CPlaylistsModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    qDebug() << "> Removing rows from playlists model - row: " << row << " count: " << count;
+    beginRemoveRows(QModelIndex(), row, row + count -1);
+
+    // iterators for scope
+    const auto beginScope = _pointer->begin() + row;
+    const auto endScope = beginScope + count;
+
+    // removing
+    _pointer->erase(beginScope, endScope);
+
+    endRemoveRows();
+    return true;
+}
+
 bool CPlaylistsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (index.isValid() && role == Qt::EditRole) {
@@ -108,8 +103,14 @@ bool CPlaylistsModel::setData(const QModelIndex &index, const QVariant &value, i
 
 Qt::ItemFlags CPlaylistsModel::flags(const QModelIndex &index) const
 {
+    // flags
+    // if smth is frong
     if (!index.isValid())
               return Qt::ItemIsEnabled;
 
-          return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    // all except "All" playlist are editable
+    if(!index.row())
+        return QAbstractItemModel::flags(index);
+
+    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
