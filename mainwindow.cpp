@@ -105,6 +105,8 @@ void MainWindow::on_addPushButton_clicked()
     const auto index = ui->playlists_listView->model()->index(count, 0);
     ui->playlists_listView->edit(index);
     */
+    // saving to database
+    base->BASE_saveData();
 }
 
 void MainWindow::on_deletePushButton_clicked()
@@ -122,5 +124,8 @@ void MainWindow::on_deletePushButton_clicked()
     foreach (auto index, indexes) {
         ui->playlists_listView->model()->removeRow(index.row());
     }
+
+    // saving to database
+    base->BASE_saveData();
     // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
 }
