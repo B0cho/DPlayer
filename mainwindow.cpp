@@ -100,11 +100,11 @@ void MainWindow::on_addPushButton_clicked()
     const auto count = ui->playlists_listView->model()->rowCount(); // getting count of elements in model
     ui->playlists_listView->model()->insertRow(count); // appending new row
 
-    /*
     // activating last to edit
     const auto index = ui->playlists_listView->model()->index(count, 0);
+    ui->playlists_listView->setCurrentIndex(index);
     ui->playlists_listView->edit(index);
-    */
+
     // saving to database
     base->BASE_saveData();
 }

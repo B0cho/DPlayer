@@ -93,8 +93,9 @@ bool CPlaylistsModel::removeRows(int row, int count, const QModelIndex &parent)
 bool CPlaylistsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (index.isValid() && role == Qt::EditRole) {
-              qDebug() << "Setting data";
-              _pointer->first().title = value.toString();
+              qDebug() << "> Setting data";
+              CMediaPlaylist& item = _pointer->operator [](index.row());
+              item.title = value.toString();
               emit dataChanged(index, index, {role});
               return true;
           }
