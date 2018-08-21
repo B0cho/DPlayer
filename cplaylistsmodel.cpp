@@ -39,7 +39,6 @@ bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
     // vars
     QList<int> usedIds, newIds;
     QStringList usedTitles;
-    uint titleIterator = 0;
     QString newTitle = "New playlist";
 
     // getting already used ids and titles
@@ -48,26 +47,20 @@ bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
         usedTitles.append(i.title); // and get title
     }
 
+
     // randomizing id unitl getting unique one
     for(int i = 0; i < count; i++) // for each new row
     {
-        int newId;
-        do
-        {
-            newId = QRandomGenerator::global()->bounded(1, 10000000); // generate new id
-        } while(usedIds.contains(newId) || newIds.contains(newId)); // and check if it is not already used
+        int newId = CDatabaseMember::findNewId(usedIds + newIds);
         qDebug() << ">> New playlist id: " << newId;
         newIds.append(newId); // when not used found, append it
     }
 
-    // getting default new names
-    while(usedTitles.contains(newTitle)) newTitle = "New playlist (" + QString::number(++titleIterator) + ")"; // find "New playlist (1, 2..i)" i
-
     // appending
     foreach (auto newId, newIds) {
-        if(titleIterator)
-            newTitle = "New playlist (" + QString::number(titleIterator++) + ")"; // if there is already "New playlist (i), then iterate
-        _pointer->insert(row++, CMediaPlaylist(newId, newTitle, "New playlist"));
+            newTitle = CDatabaseMember::findNewTitle("New playlist", usedTitles);
+            usedTitles.append(newTitle);
+            _pointer->insert(row++, CMediaPlaylist(newId, newTitle, "New playlist"));
     }
 
     endInsertRows();
@@ -114,4 +107,9 @@ Qt::ItemFlags CPlaylistsModel::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index);
 
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
+Qt::DropActions CPlaylistsModel::supportedDragActions() const
+{
+    return Qt::CopyAction;
 }

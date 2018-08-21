@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QAbstractListModel>
-#include <QRandomGenerator>
 #include <boost/smart_ptr.hpp>
 #include "cmediaplaylist.h"
 
@@ -22,6 +21,7 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::DropActions supportedDragActions() const;
 
 private:
     /// members
