@@ -7,7 +7,10 @@
 #include <QMessageBox>
 #include <QString>
 #include <QItemSelection>
+#include <QDrag>
+#include <QMimeData>
 #include <algorithm>
+#include <boost/shared_ptr.hpp>
 #include "csettings.h"
 #include "cmediabase.h"
 
@@ -40,6 +43,7 @@ private slots:
     void WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected);
     void on_addPushButton_clicked();
     void on_deletePushButton_clicked();
+    void on_fragments_listView_pressed(const QModelIndex &index);
 };
 
 #endif // MAINWINDOW_H

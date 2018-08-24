@@ -32,26 +32,26 @@ int CPlaylistsModel::rowCount(const QModelIndex &parent) const
 
 bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
 {
+    Q_UNUSED(parent);
     qDebug() << "> Adding rows to playlist model - row: " << row << "count: " << count;
     beginInsertRows(QModelIndex(), row, row + count - 1);
 
     // looking for unique IDs and titles
     // vars
-    QList<int> usedIds, newIds;
+    QList<int> newIds;
     QStringList usedTitles;
     QString newTitle = "New playlist";
 
     // getting already used ids and titles
     foreach (const CMediaPlaylist i, *_pointer) {   // for each playlist
-        usedIds.append(i.id()); // get id
         usedTitles.append(i.title); // and get title
     }
 
-
-    // randomizing id unitl getting unique one
+    // getting new id for each playlist
     for(int i = 0; i < count; i++) // for each new row
     {
-        int newId = CDatabaseMember::findNewId(usedIds + newIds);
+        int newId;
+        emit PMODEL_getNewId(newId);
         qDebug() << ">> New playlist id: " << newId;
         newIds.append(newId); // when not used found, append it
     }
@@ -59,8 +59,10 @@ bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
     // appending
     foreach (auto newId, newIds) {
             newTitle = CDatabaseMember::findNewTitle("New playlist", usedTitles);
+            qDebug() << ">> New playlists title: " << newTitle;
             usedTitles.append(newTitle);
             _pointer->insert(row++, CMediaPlaylist(newId, newTitle, "New playlist"));
+            qDebug() << ">> appended";
     }
 
     endInsertRows();

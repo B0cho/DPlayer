@@ -5,8 +5,13 @@ CMediaPlaylist::CMediaPlaylist(const int id, const QString title, const QString 
     //
 }
 
-void CMediaPlaylist::addFragment(const CMediaFragment* fragment, const int position)
+void CMediaPlaylist::addFragment(const CMediaFragment* fragment,  int position)
 {
+    if(_list.contains(position))
+    {
+        // if already exists take the last and add one
+        position = _list.lastKey() + 1;
+    }
     _list.insert(position, fragment);
 }
 

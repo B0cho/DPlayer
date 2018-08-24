@@ -129,3 +129,25 @@ void MainWindow::on_deletePushButton_clicked()
     base->BASE_saveData();
     // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
 }
+
+void MainWindow::on_fragments_listView_pressed(const QModelIndex &index)
+{
+    // when pressen on fragments list View
+    qDebug() << "> Presed on playlists list item";
+    // checking which mouse button was pressed
+    auto button = QApplication::mouseButtons();
+    // preparing widgets to drag/drop
+    if(button == Qt::LeftButton || button == Qt::RightButton)
+    {
+        // setting fragments view
+        ui->fragments_listView->setAcceptDrops(true);
+        ui->fragments_listView->setDragEnabled(true);
+        ui->fragments_listView->setDropIndicatorShown(true);
+        // setting playlists view
+        ui->playlists_listView->setAcceptDrops(true);
+        ui->playlists_listView->setDropIndicatorShown(true);
+
+    } else return;
+
+
+}

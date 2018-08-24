@@ -4,8 +4,9 @@
 #include <QList>
 #include <QString>
 #include <QRandomGenerator>
+#include <QRegularExpression>
 
-
+/// REPRESENTS DATABASE MEMBER
 class CDatabaseMember
 {
 private:
@@ -15,8 +16,7 @@ public:
     CDatabaseMember();
     int id() const;
     /// statics
-    static int findNewId(const QList<int> usedIds);
-    static QString findNewTitle(const QString origin, const QStringList usedTitles);
+    static QString findNewTitle(QString origin, const QStringList &usedTitles); // returns new title, unique for usedTitles
 };
 
 #endif // CDATABASEMEMBER_H

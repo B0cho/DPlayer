@@ -14,6 +14,12 @@ CMediaFragment::CMediaFragment(const int id, const QFileInfo file_info)
 
 }
 
+CMediaFragment::CMediaFragment(const int id, const CMediaFragment &toBeCopied)
+    : CDatabaseMember(id), _file(toBeCopied.file()), _title(toBeCopied.title()), _start(toBeCopied.start()), _end(toBeCopied.end()), _desc(toBeCopied.desc())
+{
+
+}
+
 QFileInfo CMediaFragment::file() const
 {
     return _file;

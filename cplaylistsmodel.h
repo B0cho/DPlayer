@@ -29,6 +29,9 @@ private:
 
     /// methods
 
+signals:
+    void PMODEL_getNewId(int& newId); // demands providing new id for playlist
+
 };
 
 #endif // CPLAYLISTSMODEL_H

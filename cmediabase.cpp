@@ -94,6 +94,9 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     // models initialization
     _playlistsModel = boost::shared_ptr<CPlaylistsModel>(new CPlaylistsModel(_playlists));
     _fragmentsModel = boost::shared_ptr<CFragmentsModel>(new CFragmentsModel);
+    // connecting private signals
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_appendFragments(QList<CMediaFragment>, QList<CMediaFragment*>&)), this, SLOT(BASE_insertFragments(QList<CMediaFragment>,QList<CMediaFragment*>&))); // appending new fragments on fragments model demand
+    connect(_playlistsModel.get(), SIGNAL(PMODEL_getNewId(int&)), this, SLOT(BASE_newPlaylistId(int&))); // providing new id to playlists model
 }
 
 /*!
@@ -103,6 +106,7 @@ CMediaBase::~CMediaBase()
 {
     if(isLoaded())
     {
+        // if media base is loaded save its data end then close
         BASE_saveData();
         _database->close();
     }
@@ -188,7 +192,9 @@ CMediaFragment* CMediaBase::newMediaFile(const QFileInfo file_info) const
 {
     if(!file_info.exists()) return nullptr;
     CMediaFragment* file;
-    file = new CMediaFragment((!_fragments->empty()) ? _fragments->last().id() + 1 : 0, file_info);
+    int newId;
+    BASE_newFragmentId(newId);
+    file = new CMediaFragment((!_fragments->empty()) ? newId : 0, file_info);
     // setting default values
     file->setStart(CMediaFragment::startScope);
     file->setEnd(CMediaFragment::endScope);
@@ -380,9 +386,38 @@ bool CMediaBase::BASE_saveData()
 
 void CMediaBase::BASE_changeFragmentsList(QItemSelection selected, QItemSelection deselected)
 {
-     const auto playlistRow = selected.indexes().first().row();
-     CMediaPlaylist& newPlaylist = (*_playlists)[playlistRow];
-     _fragmentsModel->setListPointer(newPlaylist.getList());
+    Q_UNUSED(deselected);
+    const auto playlistRow = selected.indexes().first().row();
+    CMediaPlaylist& newPlaylist = (*_playlists)[playlistRow];
+    _fragmentsModel->FMODEL_setListPointer(newPlaylist.getList());
+}
+
+void CMediaBase::BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment *> &inserted)
+{
+    qDebug() << "> BASE_insertFragments - inserting";
+    // inserting
+    foreach (auto copy, toBeCopied) {
+        int newId;
+        BASE_newFragmentId(newId); // getting new id
+        qDebug() << ">> new id for copy: " << newId;
+        _fragments->append(CMediaFragment(newId, copy)); // inserting to fragments
+        inserted.append(&_fragments->last()); // appending pointers
+        qDebug() << ">> appended";
+    }
+}
+
+void CMediaBase::BASE_newFragmentId(int &newId) const
+{
+    // return maximum id of fragments items
+    const auto maxId = std::max_element(_fragments.get()->cbegin(), _fragments.get()->cend(), [](const auto a, const auto b)->bool{ return std::max(a.id(), b.id()); });
+    newId = maxId->id() + 1;
+}
+
+void CMediaBase::BASE_newPlaylistId(int &newId) const
+{
+    // returns maximum id of playlists items
+    const auto maxId = std::max_element(_playlists->cbegin(), _playlists->cend(), [](const auto a, const auto b)->bool{return std::max(a.id(), b.id()); });
+    newId = maxId->id() + 1;
 }
 
 /*!

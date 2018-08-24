@@ -39,8 +39,8 @@ public:
     QFileInfoList getFilesList(const QFlags<QDir::Filter> filters = QDir::Readable | QDir::Files) const; // returns list of files in directories basing on directories and extensions
 
     /// models access
-    boost::shared_ptr<CPlaylistsModel> getPlaylistsModel() const;
-    boost::shared_ptr<CFragmentsModel> getFragmentsModel() const;
+    boost::shared_ptr<CPlaylistsModel> getPlaylistsModel() const; // returns playlist model
+    boost::shared_ptr<CFragmentsModel> getFragmentsModel() const; // returns fragments model
 
 private:
     /// models
@@ -71,6 +71,11 @@ public slots:
     bool BASE_reload(bool save = false); // reload database- saves it if necessary and loads all content again
     bool BASE_saveData(); // saves data to database
     void BASE_changeFragmentsList(QItemSelection selected, QItemSelection deselected); // changes list of fragments in fragments model
+
+private slots:
+     void BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // inserts toBeCopied to _fragments and returns pointers to them
+     void BASE_newFragmentId(int& newId) const; // returns new id for new fragment (last of already stored items in fragments)
+     void BASE_newPlaylistId(int& newId) const; // returns new id for new playlist (last of alerady stored items in playlists)
 	
 signals:
     void BASE_DatabaseLoaded(const bool database_loaded) const; // result of loading database
