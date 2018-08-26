@@ -6,13 +6,12 @@
 #include "cmediafragment.h"
 
 /// MIME-DATA CLASS FOR FRAGMENT -> template!!
-typedef QList<CMediaFragment> CMFragmentsQList;
 class CFragmentMime : public QMimeData
 {    
 public:
     CFragmentMime();
     const static QString mimeType;
-    CMFragmentsQList fragments;
+    QList<const CMediaFragment*> fragments;
 
     /// QMIMEDATA
     bool hasFormat(const QString &mimetype) const;

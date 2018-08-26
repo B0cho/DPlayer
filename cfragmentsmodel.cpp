@@ -67,7 +67,7 @@ QMimeData *CFragmentsModel::mimeData(const QModelIndexList &indexes) const
             // for each index find key for given fragment of model and append it
             const auto key = index.row() + 1;
             const auto val = _listPointer->value(key);
-            data->fragments.append(*val);
+            data->fragments.append(val);
         }
     }
     return data;
@@ -96,18 +96,39 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     if(data->formats().contains(CFragmentMime::mimeType))
     {
         qDebug() << ">> Dropped fragments";
+
         // casting to fragments
-        const auto fragmentsData = dynamic_cast<const CFragmentMime*>(data)->fragments;
+        const QList<const CMediaFragment*> fragmentsData = dynamic_cast<const CFragmentMime*>(data)->fragments;
+
         // checking if to move or to copy
         if(row == -1 && parent.isValid())
         {
             // move
             qDebug() << ">>> Moving";
-            row = parent.row();
+            row = parent.row() + 1;
 
+            CMFragmentsMap newMap;
+            // inserting and removing dropped items at their place
+            foreach (const auto i, fragmentsData) {
+                qDebug() << ">>>> Moving id: " << i->id() << " title: " << i->title() << " to row: " << row;
+                newMap.insert(row++, i);
+                _listPointer->remove(_listPointer->key(i));
+            }
+
+            // inserting lasting data from old map
+            row = 1;
+            foreach (const auto i, *_listPointer) {
+                while (newMap.value(row)) {
+                    row++;
+                }
+                newMap.insert(row++, i);
+            }
+
+            // swapping maps
+            _listPointer->swap(newMap);
             /// TO DO
             ///
-            return false /* true */;
+            return true;
         }
         else
         {
@@ -118,7 +139,11 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
             // inserting copies to mediabase fragments list
             QList<CMediaFragment*> inserted;
-            emit FMODEL_appendFragments(fragmentsData, inserted);
+            QList<CMediaFragment> toBeInserted;
+            foreach (const auto i, fragmentsData) {
+                toBeInserted.append(*i);
+            }
+            emit FMODEL_appendFragments(toBeInserted, inserted);
 
             // finding new names
             // getting used titles in scope of model
