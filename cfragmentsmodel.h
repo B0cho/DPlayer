@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include "cmediaplaylist.h"
-#include "cfragmentmime.h"
+#include "cinternalmime.h"
 
 /// FRAGMENTS MODEL
 typedef QMap<int, const CMediaFragment*> CMFragmentsMap;

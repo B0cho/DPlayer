@@ -52,14 +52,14 @@ Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 QStringList CFragmentsModel::mimeTypes() const
 {
     QStringList types;
-    types << CFragmentMime::mimeType; // adding fragment type
+    types << CInternalMime<void>::fragmentMimeType;
     return types;
 }
 
 QMimeData *CFragmentsModel::mimeData(const QModelIndexList &indexes) const
 {
     // preparing data for mime
-    CFragmentMime* data = new CFragmentMime();
+    CInternalMime<CMediaFragment>* data = new CInternalMime<CMediaFragment>(CInternalMime<void>::fragmentMimeType);
 
     foreach (auto index, indexes) {
         if(index.isValid())
@@ -67,7 +67,7 @@ QMimeData *CFragmentsModel::mimeData(const QModelIndexList &indexes) const
             // for each index find key for given fragment of model and append it
             const auto key = index.row() + 1;
             const auto val = _listPointer->value(key);
-            data->fragments.append(val);
+            data->container.append(val);
         }
     }
     return data;
@@ -81,7 +81,7 @@ bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     Q_UNUSED(parent);
     Q_UNUSED(column);
     // if data and format is correct
-    if(data && (data->hasFormat(CFragmentMime::mimeType) /*|| data->hasFormat(CPlaylistMime::mimeType*/)) return true;
+    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) /*|| data->hasFormat(CPlaylistMime::mimeType*/)) return true;
     else return false;
 }
 
@@ -93,12 +93,12 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     // if not ignore
     if(action == Qt::IgnoreAction) return true;
     // if dropped Fragment
-    if(data->formats().contains(CFragmentMime::mimeType))
+    if(data->formats().contains(CInternalMime<void>::fragmentMimeType))
     {
         qDebug() << ">> Dropped fragments";
 
         // casting to fragments
-        const QList<const CMediaFragment*> fragmentsData = dynamic_cast<const CFragmentMime*>(data)->fragments;
+        const QList<const CMediaFragment*> fragmentsData = dynamic_cast<const CInternalMime<CMediaFragment>*>(data)->container;
 
         // checking if to move or to copy
         if(row == -1 && parent.isValid())
