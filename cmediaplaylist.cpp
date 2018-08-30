@@ -37,3 +37,8 @@ CMFragmentsMap* CMediaPlaylist::getList()
 {
     return &_list;
 }
+
+const CMFragmentsMap CMediaPlaylist::getList() const
+{
+    return _list;
+}

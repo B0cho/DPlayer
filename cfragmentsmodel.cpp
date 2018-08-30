@@ -82,8 +82,10 @@ bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     Q_UNUSED(parent);
     Q_UNUSED(column);
     // if data and format is correct
-    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType)) return true;
-    else return false;
+    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType))
+        return true;
+    else
+        return false;
 }
 
 bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
@@ -130,8 +132,9 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
             // swapping maps
             _listPointer->swap(newMap);
-            /// TO DO
-            ///
+
+            // saving database
+            emit FMODEL_saveDatabase();
             return true;
         }
         else
@@ -155,6 +158,7 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
             std::transform(_listPointer->cbegin(),
                            _listPointer->cend(), std::back_inserter(usedTitles),
                            [](const CMediaFragment* i)->const QString{ return i->title(); });
+
             // changing title
             foreach (CMediaFragment* newOne, inserted) {
                 QString title = newOne->title();
@@ -170,6 +174,9 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                 qDebug() << ">>> appended - id: " << insert->id() << " title: " << insert->title();
             }
             endInsertRows();
+
+            // saving database
+            emit FMODEL_saveDatabase();
             return true;
         }
     }

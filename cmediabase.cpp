@@ -100,6 +100,8 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_appendFragments(QList<CMediaFragment>, QList<CMediaFragment*>&)), this, SLOT(BASE_insertFragments(QList<CMediaFragment>,QList<CMediaFragment*>&))); // appending new fragments on fragments model demand
     connect(_playlistsModel.get(), SIGNAL(PMODEL_appendFragments(QList<CMediaFragment>, QList<CMediaFragment*>&)), this, SLOT(BASE_insertFragments(QList<CMediaFragment>,QList<CMediaFragment*>&))); // appending new fragments on playlists model demand
     connect(_playlistsModel.get(), SIGNAL(PMODEL_getNewId(int&)), this, SLOT(BASE_newPlaylistId(int&))); // providing new id to playlists model
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
+    connect(_playlistsModel.get(), SIGNAL(PMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
 }
 
 /*!

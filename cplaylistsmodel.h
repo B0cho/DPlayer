@@ -39,6 +39,7 @@ private:
 signals:
     void PMODEL_getNewId(int& newId); // demands providing new id for playlist
     void PMODEL_appendFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted);
+    void PMODEL_saveDatabase();
 
 };
 

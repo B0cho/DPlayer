@@ -20,6 +20,7 @@ public:
     int size() const; // return size of playlist
     int getPosition(const CMediaFragment* frag) const; // returns positions of given fragments
     CMFragmentsMap* getList(); // returns map of fragments
+    const CMFragmentsMap getList() const;
 
     /// members
     QString title;
