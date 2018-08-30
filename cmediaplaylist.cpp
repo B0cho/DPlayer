@@ -15,6 +15,14 @@ void CMediaPlaylist::addFragment(const CMediaFragment* fragment,  int position)
     _list.insert(position, fragment);
 }
 
+void CMediaPlaylist::addFragment(const QList<CMediaFragment *> &fragment)
+{
+    int pos = (_list.empty()) ? 1 : _list.lastKey() + 1;
+    foreach (const auto i, fragment) {
+        addFragment(i, pos++);
+    }
+}
+
 int CMediaPlaylist::size() const
 {
     return _list.size();

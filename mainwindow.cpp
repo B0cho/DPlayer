@@ -44,7 +44,17 @@ MainWindow::MainWindow(QWidget *parent) :
     // setting models
     ui->playlists_listView->setModel(base->getPlaylistsModel().get());
     ui->fragments_listView->setModel(base->getFragmentsModel().get());
+    /*
+    // setting fragments view
+    ui->fragments_listView->setAcceptDrops(true);
+    ui->fragments_listView->setDragEnabled(true);
+    ui->fragments_listView->setDropIndicatorShown(true);
 
+    // setting playlists view
+    ui->playlists_listView->setAcceptDrops(true);
+    ui->playlists_listView->setDragEnabled(true);
+    ui->playlists_listView->setDropIndicatorShown(true);
+    */
     // connections between models and controls
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(WIND_enableDeleteButton(QItemSelection, QItemSelection))); // enabling delete button
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
@@ -130,24 +140,3 @@ void MainWindow::on_deletePushButton_clicked()
     // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
 }
 
-void MainWindow::on_fragments_listView_pressed(const QModelIndex &index)
-{
-    // when pressen on fragments list View
-    qDebug() << "> Presed on playlists list item";
-    // checking which mouse button was pressed
-    auto button = QApplication::mouseButtons();
-    // preparing widgets to drag/drop
-    if(button == Qt::LeftButton || button == Qt::RightButton)
-    {
-        // setting fragments view
-        ui->fragments_listView->setAcceptDrops(true);
-        ui->fragments_listView->setDragEnabled(true);
-        ui->fragments_listView->setDropIndicatorShown(true);
-        // setting playlists view
-        ui->playlists_listView->setAcceptDrops(true);
-        ui->playlists_listView->setDropIndicatorShown(true);
-
-    } else return;
-
-
-}

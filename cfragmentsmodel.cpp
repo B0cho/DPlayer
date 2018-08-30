@@ -44,7 +44,7 @@ Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
     if (index.isValid())
-         return Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
     else
          return Qt::ItemIsDropEnabled | defaultFlags;
 }
@@ -52,6 +52,7 @@ Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 QStringList CFragmentsModel::mimeTypes() const
 {
     QStringList types;
+    // support for mime types
     types << CInternalMime<void>::fragmentMimeType;
     return types;
 }
@@ -81,7 +82,7 @@ bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     Q_UNUSED(parent);
     Q_UNUSED(column);
     // if data and format is correct
-    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) /*|| data->hasFormat(CPlaylistMime::mimeType*/)) return true;
+    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType)) return true;
     else return false;
 }
 
@@ -89,11 +90,14 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 {
     Q_UNUSED(column);
     Q_UNUSED(parent);
-    qDebug() << "> Dropped data on fragments list";
+    qDebug() << "> Dropped data on fragments list: row: " << row;
+
     // if not ignore
-    if(action == Qt::IgnoreAction) return true;
+    if(action == Qt::IgnoreAction)
+        return true;
+
     // if dropped Fragment
-    if(data->formats().contains(CInternalMime<void>::fragmentMimeType))
+    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
     {
         qDebug() << ">> Dropped fragments";
 
@@ -135,23 +139,22 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
             // copy
             qDebug() << ">>> Copying";
             // getting row for qmap
-            row = _listPointer->lastKey() +1;
+            row = _listPointer->lastKey() + 1;
 
             // inserting copies to mediabase fragments list
             QList<CMediaFragment*> inserted;
             QList<CMediaFragment> toBeInserted;
-            foreach (const auto i, fragmentsData) {
-                toBeInserted.append(*i);
-            }
+            std::transform(fragmentsData.cbegin(),
+                           fragmentsData.cend(), std::back_inserter(toBeInserted),
+                           [](const CMediaFragment* i)->const CMediaFragment{ return *i; });
             emit FMODEL_appendFragments(toBeInserted, inserted);
 
             // finding new names
             // getting used titles in scope of model
             QStringList usedTitles;
-            foreach (const CMediaFragment* fragment, *_listPointer) {
-                usedTitles.append(fragment->title());
-            }
-
+            std::transform(_listPointer->cbegin(),
+                           _listPointer->cend(), std::back_inserter(usedTitles),
+                           [](const CMediaFragment* i)->const QString{ return i->title(); });
             // changing title
             foreach (CMediaFragment* newOne, inserted) {
                 QString title = newOne->title();
@@ -170,9 +173,6 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
             return true;
         }
     }
-    /// place for dropped playlist
-    /// TO DO
-
     return false;
 }
 

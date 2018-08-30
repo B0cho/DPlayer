@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <boost/smart_ptr.hpp>
 #include "cmediaplaylist.h"
+#include "cinternalmime.h"
 
 /// PLAYLIST MODEL
 /// typdefs
@@ -21,7 +22,13 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    // drag and drop
     Qt::DropActions supportedDragActions() const;
+    Qt::DropActions supportedDropActions() const;
+    QStringList mimeTypes() const;
+    QMimeData* mimeData(const QModelIndexList &indexes) const;
+    bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
 private:
     /// members
@@ -31,6 +38,7 @@ private:
 
 signals:
     void PMODEL_getNewId(int& newId); // demands providing new id for playlist
+    void PMODEL_appendFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted);
 
 };
 

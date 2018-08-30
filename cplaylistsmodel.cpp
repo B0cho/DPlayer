@@ -99,19 +99,128 @@ bool CPlaylistsModel::setData(const QModelIndex &index, const QVariant &value, i
 
 Qt::ItemFlags CPlaylistsModel::flags(const QModelIndex &index) const
 {
-    // flags
-    // if smth is frong
-    if (!index.isValid())
-              return Qt::ItemIsEnabled;
-
-    // all except "All" playlist are editable
-    if(!index.row())
-        return QAbstractItemModel::flags(index);
-
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    if (index.isValid())
+    {
+        // if selected is 'all' playlist
+        if(index.row())
+            return Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+        else
+            return Qt::ItemIsDragEnabled | defaultFlags;
+    }
+    else
+         return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 Qt::DropActions CPlaylistsModel::supportedDragActions() const
 {
     return Qt::CopyAction;
+}
+
+Qt::DropActions CPlaylistsModel::supportedDropActions() const
+{
+    return Qt::CopyAction;
+}
+
+QStringList CPlaylistsModel::mimeTypes() const
+{
+    QStringList types;
+    // supported mime types for cmediafragment and cmediaplaylist
+    types << CInternalMime<void>::fragmentMimeType << CInternalMime<void>::playlistMimeType;
+    return types;
+}
+
+QMimeData *CPlaylistsModel::mimeData(const QModelIndexList &indexes) const
+{
+    // preparing data
+    CInternalMime<CMediaPlaylist>* data = new CInternalMime<CMediaPlaylist>(CInternalMime<void>::playlistMimeType);
+
+    // collecting fragments from selected playlists
+    foreach (auto index, indexes) {
+        // appending
+        const auto val = _pointer->operator [](index.row());
+        data->container.append(&val);
+    }
+    return data;
+}
+
+bool CPlaylistsModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    qDebug() << "> Drop on " << this;
+    Q_UNUSED(action);
+    Q_UNUSED(column);
+    Q_UNUSED(parent);
+    // if data and its format is correct and if row is not "all" playlist (0 row)
+    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) || (data->hasFormat(CInternalMime<void>::playlistMimeType))) && row)
+        return true;
+    else
+        return false;
+}
+
+bool CPlaylistsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    Q_UNUSED(column);
+    Q_UNUSED(parent);
+    qDebug() << "> Dropped data on playlist list: row: " << row;
+
+    // if not ignore, if not dropped on existing item
+    if(action == Qt::IgnoreAction || (row == -1 && !parent.isValid()))
+        return true;
+
+    // if dropped playlist
+    if(data->hasFormat(CInternalMime<void>::playlistMimeType))
+    {
+        // copying playlists fragments
+        qDebug() << ">> Dropped playlist";
+
+        // casting to playlists
+        const QList<const CMediaPlaylist*> playlistData = dynamic_cast<const CInternalMime<CMediaPlaylist>*> (data)->container;
+
+        /// TO ADD
+
+        return true;
+    }
+
+    // if dropped fragments
+    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
+    {
+        // dropped fragments
+        qDebug() << ">> Dropped fragments";
+
+        // casting to fragments
+        const QList<const CMediaFragment*> playlistData = dynamic_cast<const CInternalMime<CMediaFragment>*> (data)->container;
+
+        // getting row
+        row = parent.row();
+
+        // getting playlist
+        CMediaPlaylist* playlist = &_pointer->operator [](row);
+
+        // inserting fragments to be copied
+        QList<CMediaFragment*> inserted;
+        QList<CMediaFragment> toBeInserted;
+        std::transform(playlistData.cbegin(), playlistData.cend(),
+                       std::back_inserter(toBeInserted),
+                       [](const CMediaFragment* i)->const CMediaFragment{ return *i; });
+        emit PMODEL_appendFragments(toBeInserted, inserted);
+
+        // finding new names
+        QStringList usedTitles;
+        std::transform(playlist->getList()->cbegin(),
+                       playlist->getList()->cend(), usedTitles.begin(),
+                       [](const CMediaFragment* i)->const QString{ return i->title(); });
+
+        // changing titles
+        foreach (CMediaFragment* copied, inserted) {
+            QString title = copied->title();
+            title = CDatabaseMember::findNewTitle(title, usedTitles);
+            usedTitles.append(title);
+            copied->setTitle(title);
+        }
+
+        // adding fragments to playlist
+        playlist->addFragment(inserted);
+        return true;
+    }
+    return false;
 }

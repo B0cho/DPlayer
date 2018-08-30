@@ -16,13 +16,14 @@ public:
     CFragmentsModel();
     QVariant data(const QModelIndex &index, int role) const;
     int rowCount(const QModelIndex &parent) const;
-    Qt::DropActions supportedDropActions() const;
-    Qt::DropActions supportedDragActions() const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    // drag and drop
     QStringList mimeTypes() const;
     QMimeData* mimeData(const QModelIndexList &indexes) const;
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    Qt::DropActions supportedDropActions() const;
+    Qt::DropActions supportedDragActions() const;
 
 public slots:
     void FMODEL_setListPointer(CMFragmentsMap *listPointer); // sets list pointer

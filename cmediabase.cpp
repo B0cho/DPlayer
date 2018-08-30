@@ -91,11 +91,14 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     // containers initialization
     _fragments = std::unique_ptr<CMFragmentsQList>(new CMFragmentsQList);
     _playlists = boost::shared_ptr<CMPlaylistQList>(new CMPlaylistQList);
+
     // models initialization
     _playlistsModel = boost::shared_ptr<CPlaylistsModel>(new CPlaylistsModel(_playlists));
     _fragmentsModel = boost::shared_ptr<CFragmentsModel>(new CFragmentsModel);
+
     // connecting private signals
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_appendFragments(QList<CMediaFragment>, QList<CMediaFragment*>&)), this, SLOT(BASE_insertFragments(QList<CMediaFragment>,QList<CMediaFragment*>&))); // appending new fragments on fragments model demand
+    connect(_playlistsModel.get(), SIGNAL(PMODEL_appendFragments(QList<CMediaFragment>, QList<CMediaFragment*>&)), this, SLOT(BASE_insertFragments(QList<CMediaFragment>,QList<CMediaFragment*>&))); // appending new fragments on playlists model demand
     connect(_playlistsModel.get(), SIGNAL(PMODEL_getNewId(int&)), this, SLOT(BASE_newPlaylistId(int&))); // providing new id to playlists model
 }
 

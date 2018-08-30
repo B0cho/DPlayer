@@ -16,6 +16,7 @@ public:
 
     /// methods
     void addFragment(const CMediaFragment* fragment, int position); // adds given fragment to given position
+    void addFragment(const QList<CMediaFragment*>& fragment); // appending fragment
     int size() const; // return size of playlist
     int getPosition(const CMediaFragment* frag) const; // returns positions of given fragments
     CMFragmentsMap* getList(); // returns map of fragments
