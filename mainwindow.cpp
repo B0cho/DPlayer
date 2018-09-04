@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), settings, SLOT(SETT_DBLoadResult(const bool))); // notification to settings about dbs load
     connect(base, SIGNAL(BASE_DatabaseCreated(const QFileInfo)), settings, SLOT(SETT_DBCreateResult(const QFileInfo))); // notification to settings about dbs create
 
-    /// prepare adding and removing rows in runtime
     // settings init
     settings->Init();
 
@@ -44,21 +43,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // setting models
     ui->playlists_listView->setModel(base->getPlaylistsModel().get());
     ui->fragments_listView->setModel(base->getFragmentsModel().get());
-    /*
-    // setting fragments view
-    ui->fragments_listView->setAcceptDrops(true);
-    ui->fragments_listView->setDragEnabled(true);
-    ui->fragments_listView->setDropIndicatorShown(true);
 
-    // setting playlists view
-    ui->playlists_listView->setAcceptDrops(true);
-    ui->playlists_listView->setDragEnabled(true);
-    ui->playlists_listView->setDropIndicatorShown(true);
-    */
-    // connections between models and controls
-    connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(WIND_enableDeleteButton(QItemSelection, QItemSelection))); // enabling delete button
+    // connections between models, base and controls
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
+    connect(ui->dropSiteLabel, SIGNAL(isDeleteAccepted(const QMimeData*,bool&)), base->getPlaylistsModel().get(), SLOT(PMODEL_isDeleteAccepted(const QMimeData*, bool&))); // checks if mime data dropped on dropsite can be deleted
+    connect(ui->dropSiteLabel, SIGNAL(droppedMimeData(const QMimeData*)), base, SLOT(BASE_delete(const QMimeData*))); // deleted provided data
 
+    // settings controls
+    ui->dropSiteLabel->setFormats({CInternalMime<void>::fragmentMimeType, CInternalMime<void>::playlistMimeType}); // setting formats of dropSite accepted formats
 
 }
 
@@ -96,12 +88,14 @@ void MainWindow::WIND_updateSettings()
     settings->setWindowSize(size()); // setting current window size
 }
 
+/*
 void MainWindow::WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected)
 {
     // getting first
     auto first = ui->playlists_listView->model()->index(0, 0);
-    ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
+    //ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
 }
+*/
 
 void MainWindow::on_addPushButton_clicked()
 {
@@ -119,6 +113,7 @@ void MainWindow::on_addPushButton_clicked()
     base->BASE_saveData();
 }
 
+/*
 void MainWindow::on_deletePushButton_clicked()
 {
     // deleting selected playlist
@@ -139,4 +134,4 @@ void MainWindow::on_deletePushButton_clicked()
     base->BASE_saveData();
     // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
 }
-
+*/

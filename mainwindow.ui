@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1091</width>
+    <width>1107</width>
     <height>470</height>
    </rect>
   </property>
@@ -55,9 +55,9 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
              <widget class="QListView" name="fragments_listView">
               <property name="acceptDrops">
@@ -77,10 +77,6 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QListView" name="playlists_listView">
               <property name="acceptDrops">
@@ -97,28 +93,24 @@
               </property>
              </widget>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QPushButton" name="addPushButton">
-                <property name="text">
-                 <string>Add</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="deletePushButton">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Delete</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="CdropSiteLabel" name="dropSiteLabel">
+            <property name="acceptDrops">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Delete</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addPushButton">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -146,7 +138,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1091</width>
+     <width>1107</width>
      <height>22</height>
     </rect>
    </property>
@@ -162,10 +154,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>fragments_listView</tabstop>
-  <tabstop>playlists_listView</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>CdropSiteLabel</class>
+   <extends>QLabel</extends>
+   <header>cdropsitelabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

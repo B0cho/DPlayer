@@ -71,6 +71,7 @@ public slots:
     bool BASE_reload(bool save = false); // reload database- saves it if necessary and loads all content again
     bool BASE_saveData(); // saves data to database
     void BASE_changeFragmentsList(QItemSelection selected, QItemSelection deselected); // changes list of fragments in fragments model
+    void BASE_delete(const QMimeData* data); // deletes provided data
 
 private slots:
      void BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // inserts toBeCopied to _fragments and returns pointers to them

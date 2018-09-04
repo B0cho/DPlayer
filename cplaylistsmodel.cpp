@@ -149,9 +149,8 @@ bool CPlaylistsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     qDebug() << "> Drop on " << this;
     Q_UNUSED(action);
     Q_UNUSED(column);
-    Q_UNUSED(parent);
     // if data and its format is correct and if row is not "all" playlist (0 row)
-    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) || (data->hasFormat(CInternalMime<void>::playlistMimeType))) && row)
+    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) || (data->hasFormat(CInternalMime<void>::playlistMimeType))) && row && parent.row())
         return true;
     else
         return false;
@@ -220,4 +219,13 @@ bool CPlaylistsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     // saving database
     emit PMODEL_saveDatabase();
     return true;
+}
+
+void CPlaylistsModel::PMODEL_isDeleteAccepted(const QMimeData *data, bool &flag) const
+{
+    const auto playlists = dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data);
+    if(playlists && playlists->container.contains(&_pointer->constFirst()))
+        flag = false;
+    else
+        flag = true;
 }

@@ -41,6 +41,9 @@ signals:
     void PMODEL_appendFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted);
     void PMODEL_saveDatabase();
 
+public slots:
+    void PMODEL_isDeleteAccepted(const QMimeData* data, bool& flag) const; // checks if provided data can be dropped
+
 };
 
 #endif // CPLAYLISTSMODEL_H

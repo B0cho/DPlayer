@@ -397,6 +397,20 @@ void CMediaBase::BASE_changeFragmentsList(QItemSelection selected, QItemSelectio
     _fragmentsModel->FMODEL_setListPointer(newPlaylist.getList());
 }
 
+void CMediaBase::BASE_delete(const QMimeData *data)
+{
+    if(dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data))
+    {
+        // MediaPlaylists
+        /// TO DO
+    }
+    else if(dynamic_cast<const CInternalMime<CMediaFragment>*>(data))
+    {
+        // MediaFragments
+        /// TO DO
+    }
+}
+
 void CMediaBase::BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment *> &inserted)
 {
     qDebug() << "> BASE_insertFragments - inserting";
