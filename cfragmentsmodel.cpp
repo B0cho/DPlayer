@@ -40,8 +40,47 @@ Qt::DropActions CFragmentsModel::supportedDragActions() const
     return Qt::MoveAction | Qt::CopyAction;
 }
 
+bool CFragmentsModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    Q_UNUSED(parent);
+    qDebug() << "> Removing rows from fragments model - row: " << row << " count: " << count;
+    beginRemoveRows(QModelIndex(), row, row + count -1);
+
+    // new Qmap
+    CMFragmentsMap newMap;
+
+    // iterators for scope
+    const auto beginScope = _listPointer->begin() + row;
+    const auto endScope = beginScope + count;
+
+    // adding fragments to new map
+    int key = 1;
+    // first loop
+    for(auto i = _listPointer->cbegin(); i != beginScope; i++)
+        newMap.insert(key++, *i);
+    // second
+    for(auto i = endScope; i != _listPointer->cend(); i++)
+        newMap.insert(key++, *i);
+
+    // swapping map
+    _listPointer->swap(newMap);
+    endRemoveRows();
+    return true;
+}
+
+int CFragmentsModel::getRow(const CMediaFragment *fragment) const
+{
+    int row = 0;
+    foreach (const auto elem, *_listPointer) {
+        if(elem->id() == fragment->id()) return row;
+        row++;
+    }
+    return -1;
+}
+
 Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 {
+    // Enabled: defaultFlags, drag, drop
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
     if (index.isValid())
          return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
@@ -76,13 +115,12 @@ QMimeData *CFragmentsModel::mimeData(const QModelIndexList &indexes) const
 
 bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
-    qDebug() << "> Drop on " << this;
     Q_UNUSED(action);
     Q_UNUSED(row);
     Q_UNUSED(parent);
     Q_UNUSED(column);
     // if data and format is correct
-    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType))
+    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType) && playlistID)
         return true;
     else
         return false;
@@ -183,12 +221,13 @@ bool CFragmentsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     return false;
 }
 
-void CFragmentsModel::FMODEL_setListPointer(CMFragmentsMap *listPointer)
+void CFragmentsModel::FMODEL_setListPointer(CMFragmentsMap *listPointer, const int playlistId)
 {
     // send signal about change in model
     beginResetModel();
     //
     _listPointer = listPointer;
+    playlistID = playlistId;
     //
     endResetModel();
 }

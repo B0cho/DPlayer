@@ -36,14 +36,11 @@ private:
     CMediaBase* const base; // media library
 
 public slots:
-    void WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const; // throws notify about database file load error
+    void WIND_DBErrorNotify(const bool loaded) const; // throws notify about database file load error
     void WIND_updateSettings(); // updates settings
 
 private slots:
-    void WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected);
     void on_addPushButton_clicked();
-    void on_deletePushButton_clicked();
-    void on_fragments_listView_pressed(const QModelIndex &index);
 };
 
 #endif // MAINWINDOW_H

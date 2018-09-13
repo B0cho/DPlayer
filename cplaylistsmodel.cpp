@@ -71,6 +71,7 @@ bool CPlaylistsModel::insertRows(int row, int count, const QModelIndex &parent)
 
 bool CPlaylistsModel::removeRows(int row, int count, const QModelIndex &parent)
 {
+    Q_UNUSED(parent);
     qDebug() << "> Removing rows from playlists model - row: " << row << " count: " << count;
     beginRemoveRows(QModelIndex(), row, row + count -1);
 
@@ -146,11 +147,11 @@ QMimeData *CPlaylistsModel::mimeData(const QModelIndexList &indexes) const
 
 bool CPlaylistsModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
-    qDebug() << "> Drop on " << this;
     Q_UNUSED(action);
     Q_UNUSED(column);
+
     // if data and its format is correct and if row is not "all" playlist (0 row)
-    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) || (data->hasFormat(CInternalMime<void>::playlistMimeType))) && row && parent.row())
+    if(data && (data->hasFormat(CInternalMime<void>::fragmentMimeType) || (data->hasFormat(CInternalMime<void>::playlistMimeType))) && row && parent.isValid())
         return true;
     else
         return false;
@@ -221,11 +222,31 @@ bool CPlaylistsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     return true;
 }
 
-void CPlaylistsModel::PMODEL_isDeleteAccepted(const QMimeData *data, bool &flag) const
+int CPlaylistsModel::getRow(const CMediaPlaylist *playlist) const
 {
-    const auto playlists = dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data);
-    if(playlists && playlists->container.contains(&_pointer->constFirst()))
-        flag = false;
-    else
-        flag = true;
+    int row = 0;
+    foreach (const auto elem, *_pointer) {
+        if(elem.id() == playlist->id()) return row;
+        row++;
+    }
+    return -1;
+}
+
+void CPlaylistsModel::PMODEL_isDeleteAccepted(const QMimeData *data, bool &flag) const
+{    
+    flag = true;
+    // playlist option - when first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::playlistMimeType))
+        if(dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data)->container.contains(&_pointer->constFirst()))
+            flag = false;
+
+    // fragments option - when any fragment of first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
+    {
+        const auto fragments = dynamic_cast<const CInternalMime<CMediaFragment>*>(data)->container;
+        const auto firstPlaylist = _pointer.get()->first();
+        if(std::any_of(fragments.cbegin(), fragments.cend(),
+                       [firstPlaylist](const CMediaFragment* frag){ return firstPlaylist.getPosition(frag); }))
+            flag = false;
+    }
 }

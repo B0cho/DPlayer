@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(settings, SIGNAL(SETT_loadDB(const QFileInfo, const QList<QDir>*, const QStringList*)), base, SLOT(BASE_loadDatabase(const QFileInfo, const QList<QDir>*, const QStringList*))); // demand to load dbs
     connect(settings, SIGNAL(SETT_update()), this, SLOT(WIND_updateSettings())); // updating settings with window parameters
     connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), settings, SLOT(SETT_DBLoadResult(const bool))); // notification to settings about dbs load
+    connect(base, SIGNAL(BASE_DatabaseLoaded(const bool)), this, SLOT(WIND_DBErrorNotify(const bool)));
     connect(base, SIGNAL(BASE_DatabaseCreated(const QFileInfo)), settings, SLOT(SETT_DBCreateResult(const QFileInfo))); // notification to settings about dbs create
 
     // settings init
@@ -68,16 +69,13 @@ MainWindow::~MainWindow()
  *
  *
  */
-void MainWindow::WIND_DBErrorNotify(const bool loaded, const QFileInfo localisation) const
+void MainWindow::WIND_DBErrorNotify(const bool loaded) const
 {
 	if(!loaded)
 	{
-		QMessageBox notify;
-		notify.setText("Nie znaleziono bazy danych w podanej lokalizacji: ");
-		notify.setInformativeText(localisation.absoluteFilePath() + "\nSprawdź ustawienia.");
-        notify.setStandardButtons(QMessageBox::Ok);
-		notify.setIcon(QMessageBox::Warning);
-		notify.exec();
+        // disabling add button and delete site
+        ui->addPushButton->setEnabled(false);
+        ui->dropSiteLabel->setEnabled(false);
     }
 }
 
@@ -87,15 +85,6 @@ void MainWindow::WIND_updateSettings()
     settings->setWindowPos(pos()); // setting window position
     settings->setWindowSize(size()); // setting current window size
 }
-
-/*
-void MainWindow::WIND_enableDeleteButton(QItemSelection selected, QItemSelection deselected)
-{
-    // getting first
-    auto first = ui->playlists_listView->model()->index(0, 0);
-    //ui->deletePushButton->setEnabled((selected.contains(first)) ? false : true);
-}
-*/
 
 void MainWindow::on_addPushButton_clicked()
 {
@@ -112,26 +101,3 @@ void MainWindow::on_addPushButton_clicked()
     // saving to database
     base->BASE_saveData();
 }
-
-/*
-void MainWindow::on_deletePushButton_clicked()
-{
-    // deleting selected playlist
-    qDebug() << "> Delete button clicked";
-
-    // getting indexes
-    auto indexes = ui->playlists_listView->selectionModel()->selectedIndexes();
-
-    // sorting
-    std::sort(indexes.begin(), indexes.end(), [](const QModelIndex a, const QModelIndex b)->bool{ return a.row() >= b.row(); });
-
-    // removing
-    foreach (auto index, indexes) {
-        ui->playlists_listView->model()->removeRow(index.row());
-    }
-
-    // saving to database
-    base->BASE_saveData();
-    // maybe use setUpdatesEnabled? YOURVIEW->setUpdatesEnabled(false);
-}
-*/
