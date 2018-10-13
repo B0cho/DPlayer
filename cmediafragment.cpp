@@ -14,6 +14,12 @@ CMediaFragment::CMediaFragment(const int id, const QFileInfo file_info)
 
 }
 
+CMediaFragment::CMediaFragment(const int id, const CMediaFragment &toBeCopied)
+    : CDatabaseMember(id), _file(toBeCopied.file()), _title(toBeCopied.title()), _start(toBeCopied.start()), _end(toBeCopied.end()), _desc(toBeCopied.desc())
+{
+
+}
+
 QFileInfo CMediaFragment::file() const
 {
     return _file;
@@ -34,9 +40,13 @@ qint16 CMediaFragment::start() const
     return _start;
 }
 
-void CMediaFragment::setStart(const qint16 start)
+bool CMediaFragment::setStart(const qint16 start)
 {
-    _start = start;
+    if(startScope <= start && start <= endScope)
+    {
+        _start = start;
+        return true;
+    } else return false;
 }
 
 qint16 CMediaFragment::end() const
@@ -44,9 +54,13 @@ qint16 CMediaFragment::end() const
     return _end;
 }
 
-void CMediaFragment::setEnd(const qint16 end)
+bool CMediaFragment::setEnd(const qint16 end)
 {
-    _end = end;
+    if(startScope <= end && end <= endScope)
+    {
+        _end = end;
+        return true;
+    } else return false;
 }
 
 QString CMediaFragment::desc() const

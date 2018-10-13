@@ -33,7 +33,10 @@ SOURCES += \
     Wizards/Settings/dirswizardpage.cpp \
     cdatabasemember.cpp \
     cmediaplaylist.cpp \
-    cmediafragment.cpp
+    cmediafragment.cpp \
+    cplaylistsmodel.cpp \
+    cfragmentsmodel.cpp \
+    cdropsitelabel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -44,7 +47,11 @@ HEADERS += \
     Wizards/Settings/dirswizardpage.h \
     cdatabasemember.h \
     cmediaplaylist.h \
-    cmediafragment.h
+    cmediafragment.h \
+    cplaylistsmodel.h \
+    cfragmentsmodel.h \
+    cinternalmime.h \
+    cdropsitelabel.h
 
 FORMS += \
         mainwindow.ui \
