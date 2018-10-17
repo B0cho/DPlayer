@@ -15,7 +15,7 @@ public:
     QList<const T*> container; // main container of data
 
     /// statics
-    constexpr static QString fragmentMimeType, playlistMimeType; // statics that may be used to be passed as type for CMediaFragment and CMediaPlaylisy
+    const static QString fragmentMimeType, playlistMimeType; // statics that may be used to be passed as type for CMediaFragment and CMediaPlaylisy
 
     /// QMIMEDATA
     bool hasFormat(const QString &mimetype) const;
