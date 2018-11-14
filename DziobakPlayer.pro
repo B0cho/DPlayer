@@ -36,7 +36,8 @@ SOURCES += \
     cmediafragment.cpp \
     cplaylistsmodel.cpp \
     cfragmentsmodel.cpp \
-    cdropsitelabel.cpp
+    cdropsitelabel.cpp \
+    cplaylistdelegate.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -51,7 +52,8 @@ HEADERS += \
     cplaylistsmodel.h \
     cfragmentsmodel.h \
     cinternalmime.h \
-    cdropsitelabel.h
+    cdropsitelabel.h \
+    cplaylistdelegate.h
 
 FORMS += \
         mainwindow.ui \

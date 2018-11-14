@@ -13,6 +13,7 @@
 #include <boost/shared_ptr.hpp>
 #include "csettings.h"
 #include "cmediabase.h"
+#include "cplaylistdelegate.h"
 
 /// MAIN WINDOW
 namespace Ui {

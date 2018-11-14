@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->playlists_listView->setModel(base->getPlaylistsModel().get());
     ui->fragments_listView->setModel(base->getFragmentsModel().get());
 
+    // setting delegates
+    ui->playlists_listView->setItemDelegate(new CPlaylistDelegate);
+
     // connections between models, base and controls
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
     connect(ui->dropSiteLabel, SIGNAL(isDeleteAccepted(const QMimeData*,bool&)), base->getPlaylistsModel().get(), SLOT(PMODEL_isDeleteAccepted(const QMimeData*, bool&))); // checks if mime data dropped on dropsite can be deleted
