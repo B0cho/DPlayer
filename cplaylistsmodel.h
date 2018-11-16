@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QFont>
 #include <boost/smart_ptr.hpp>
 #include "cmediaplaylist.h"
 #include "cinternalmime.h"

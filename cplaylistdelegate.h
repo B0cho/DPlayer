@@ -1,8 +1,10 @@
 #ifndef CPLAYLISTDELEGATE_H
 #define CPLAYLISTDELEGATE_H
 
-#include <QObject>
 #include <QStyledItemDelegate>
+#include <QPainter>
+#include <QApplication>
+#include "cplaylistsmodel.h"
 /*
  * PLAYLIST DELEGATE
  */
@@ -12,8 +14,9 @@ class CPlaylistDelegate : public QStyledItemDelegate
 public:
     CPlaylistDelegate(QWidget* parent = 0);
 
-    /// overriden
+    // overriden
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
 };
 

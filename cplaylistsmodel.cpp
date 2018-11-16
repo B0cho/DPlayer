@@ -19,6 +19,18 @@ QVariant CPlaylistsModel::data(const QModelIndex &index, int role) const
     if(role == Qt::ToolTipRole)
         return _pointer->at(index.row()).description;
 
+    // status status tip role - playlist size
+    if(role == Qt::StatusTipRole)
+        return QString::number(_pointer->at(index.row()).size()) + QString(" fragements");
+
+    // FontRole	- dedicated font
+    if(role == Qt::FontRole)
+        return QFont("Calibri");
+
+    // TextAlignmentRole - align left
+    if(role == Qt::TextAlignmentRole)
+        return Qt::AlignLeft;
+
     // if nothing from above complies
     return QVariant();
 }
