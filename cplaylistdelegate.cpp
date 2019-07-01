@@ -63,7 +63,6 @@ QSize CPlaylistDelegate::sizeHint(const QStyleOptionViewItem &option, const QMod
 QWidget *CPlaylistDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     const auto font = index.data(Qt::FontRole).value<QFont>();
-    //const auto align = index.data(Qt::TextAlignmentRole).value<Qt::Alignment>();
 
     // put alignment inside option
     // give margins
@@ -86,9 +85,22 @@ void CPlaylistDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
     editorWidget->setData(title, description, status);
 }
 
+void CPlaylistDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    // convering editor
+    const auto editorWidget = qobject_cast<playlistEditorWidget*>(editor);
+
+    // updating data
+    // title
+    model->setData(index, editorWidget->getTitle());
+    // description
+    model->setData(index, editorWidget->getDescription(), Qt::ToolTipRole);
+}
+
 /*
  * EDITOR WIDET DEFINITIONS
  */
+
 
 CPlaylistDelegate::playlistEditorWidget::playlistEditorWidget(const QFont& title, const QFont& desc, const QFont& status, const QStyleOptionViewItem &opt, const QMargins margin, QWidget* parent) :
     QWidget(parent),
@@ -143,3 +155,4 @@ void CPlaylistDelegate::playlistEditorWidget::paintEvent(QPaintEvent *event)
     painter.setFont(statusFont);
     QApplication::style()->drawItemText(&painter, event->rect().translated(3, 18+15), title_ptr->alignment(), QPalette(), true, statusTip);
 }
+

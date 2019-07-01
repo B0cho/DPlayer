@@ -8,7 +8,6 @@
 #include <QLineEdit>
 #include <QMargins>
 #include <QVBoxLayout>
-#include <QLabel> //
 #include "cplaylistsmodel.h"
 
 /*
@@ -49,7 +48,7 @@ public:
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void setEditorData(QWidget* editor, const QModelIndex& index) const override;
-
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override;
 };
 
 /*
@@ -63,9 +62,13 @@ class CPlaylistDelegate::playlistEditorWidget : public QWidget
 {
     Q_OBJECT
 private:
+    // edit widgets
     std::unique_ptr<QLineEdit> title_ptr, descr_ptr;
+    // string for keeping fragments q
     QString statusTip;
+    // fonts
     const QFont titleFont, descriptionFont, statusFont;
+    // another display features
     const QStyleOptionViewItem option;
     const QMargins margins;
 
@@ -74,6 +77,16 @@ public:
     void setData(const QString& title, const QString& description, const QString& status);
     // overriden
     void paintEvent(QPaintEvent* event) override;
+
+    // getters
+    QString getTitle() const
+    {
+        return title_ptr->text();
+    }
+    QString getDescription() const
+    {
+        return descr_ptr->text();
+    }
 
 };
 
