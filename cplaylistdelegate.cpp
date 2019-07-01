@@ -101,7 +101,6 @@ void CPlaylistDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
  * EDITOR WIDET DEFINITIONS
  */
 
-
 CPlaylistDelegate::playlistEditorWidget::playlistEditorWidget(const QFont& title, const QFont& desc, const QFont& status, const QStyleOptionViewItem &opt, const QMargins margin, QWidget* parent) :
     QWidget(parent),
     title_ptr(std::unique_ptr<QLineEdit>(new QLineEdit(this))),

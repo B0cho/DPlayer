@@ -11,10 +11,10 @@
 #include "cplaylistsmodel.h"
 
 /*
- * PLAYLIST DELEGATE
- */
-/**
- * @brief The CPlaylistDelegate class
+ * Class representing playlist delegate.
+ * Allows editing playlist title and description.
+ * Embraces internal editor widget class.
+ * First attempt ever to create delegate with editor :)
  */
 
 class CPlaylistDelegate : public QStyledItemDelegate
@@ -27,15 +27,9 @@ private:
      * see definition below
      */
     class playlistEditorWidget;
-    /*
-     *
-     */
-    enum fontType {titleFont, descriptionFont, statusFont};
-    const QFont getFont(const QFont& font, fontType type) const;
 
-    /*
-     *
-     */
+    enum fontType {titleFont, descriptionFont, statusFont};
+
     static constexpr QSize itemSize = QSize(100, 50);
     static constexpr QMargins margin = QMargins(2, 2, 2, 2);
 
@@ -53,9 +47,6 @@ public:
 
 /*
  * NESTED EDITORWIDGET CLASS, THAT EMBRACES EDITOR WIDGETS
- */
-/**
- * @brief The CPlaylistDelegate::EditorWidget class
  */
 
 class CPlaylistDelegate::playlistEditorWidget : public QWidget
