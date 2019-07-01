@@ -33,6 +33,7 @@ private:
     static constexpr QSize itemSize = QSize(100, 50);
     static constexpr QMargins margin = QMargins(2, 2, 2, 2);
 
+    const QFont getFont(const QFont &font, CPlaylistDelegate::fontType type) const;
 public:
     // def ctor
     CPlaylistDelegate(QWidget* parent = 0);

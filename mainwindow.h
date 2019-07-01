@@ -14,6 +14,7 @@
 #include "csettings.h"
 #include "cmediabase.h"
 #include "cplaylistdelegate.h"
+#include "cfragmentdelegate.h"
 
 /// MAIN WINDOW
 namespace Ui {
