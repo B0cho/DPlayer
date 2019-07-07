@@ -43,6 +43,10 @@ public:
     boost::shared_ptr<CFragmentsModel> getFragmentsModel() const; // returns fragments model
 
 private:
+    /// default strings - values put below the class
+    static constexpr const char* allTitle = "Files";
+    static constexpr const char* allDescription = "Only raw files";
+
     /// models
     boost::shared_ptr<CPlaylistsModel> _playlistsModel;
     boost::shared_ptr<CFragmentsModel> _fragmentsModel;
