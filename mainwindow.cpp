@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // connections between models, base and controls
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
-    connect(ui->dropSiteLabel, SIGNAL(isDeleteAccepted(const QMimeData*,bool&)), base->getPlaylistsModel().get(), SLOT(PMODEL_isDeleteAccepted(const QMimeData*, bool&))); // checks if mime data dropped on dropsite can be deleted
+    connect(ui->dropSiteLabel, SIGNAL(isDeleteAccepted(const QMimeData*,bool&)), base, SLOT(BASE_isDeleteAccepted(const QMimeData*,bool&))); // checks if mime data dropped on dropsite can be deleted
     connect(ui->dropSiteLabel, SIGNAL(droppedMimeData(const QMimeData*)), base, SLOT(BASE_delete(const QMimeData*))); // deleted provided data
 
     // settings controls

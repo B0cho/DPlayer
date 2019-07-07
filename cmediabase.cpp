@@ -487,6 +487,25 @@ void CMediaBase::BASE_newPlaylistId(int &newId) const
     newId = maxId->id() + 1;
 }
 
+void CMediaBase::BASE_isDeleteAccepted(const QMimeData *data, bool &flag) const
+{
+    flag = true;
+    // playlist option - when first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::playlistMimeType))
+        if(dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data)->container.contains(&_playlists->first())) // if mime contains first, default playlist, then false
+            flag = false;
+
+    // fragments option - when any fragment of first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
+    {
+        const auto fragments = dynamic_cast<const CInternalMime<CMediaFragment>*>(data)->container;
+        const auto firstPlaylist = _playlists->first();
+        if(std::any_of(fragments.cbegin(), fragments.cend(),
+                       [firstPlaylist](const CMediaFragment* frag){ return firstPlaylist.getPosition(frag); }))
+            flag = false;
+    }
+}
+
 /*!
  * \brief Clears database and sets its structure up
  * \b {Returns:} \c true if process was succesful; \c false it it wasn't possible
