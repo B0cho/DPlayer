@@ -506,6 +506,13 @@ void CMediaBase::BASE_isDeleteAccepted(const QMimeData *data, bool &flag) const
     }
 }
 
+void CMediaBase::BASE_isEditionAccepted(const boost::shared_ptr<const CMediaFragment> fragment, bool &flag) const
+{
+    flag = true;
+    if (_playlists->first().getPosition(fragment.get()))
+        flag = false;
+}
+
 /*!
  * \brief Clears database and sets its structure up
  * \b {Returns:} \c true if process was succesful; \c false it it wasn't possible
