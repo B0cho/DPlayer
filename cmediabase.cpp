@@ -102,6 +102,7 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     connect(_playlistsModel.get(), SIGNAL(PMODEL_getNewId(int&)), this, SLOT(BASE_newPlaylistId(int&))); // providing new id to playlists model
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
     connect(_playlistsModel.get(), SIGNAL(PMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_isFragmentEditable(const int&, bool&)), this, SLOT(BASE_isEditionAccepted(const int, bool&))); // providing information to fragment model if fragment can be edited
 }
 
 /*!
@@ -506,10 +507,11 @@ void CMediaBase::BASE_isDeleteAccepted(const QMimeData *data, bool &flag) const
     }
 }
 
-void CMediaBase::BASE_isEditionAccepted(const boost::shared_ptr<const CMediaFragment> fragment, bool &flag) const
+void CMediaBase::BASE_isEditionAccepted(const int playlistID, bool &flag) const
 {
     flag = true;
-    if (_playlists->first().getPosition(fragment.get()))
+    // checking if playlistID is the same as id of first, default playlist
+    if (playlistID == _playlists->first().id())
         flag = false;
 }
 

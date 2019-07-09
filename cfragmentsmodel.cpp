@@ -82,8 +82,17 @@ Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 {
     // Enabled: defaultFlags, drag, drop
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    // checking, if fragment is editable
+    bool isEditable;
+    emit FMODEL_isFragmentEditable(playlistID, isEditable);
+
+    // if everything is valid
     if (index.isValid())
-         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    {
+        if(isEditable)
+            defaultFlags |= Qt::ItemIsEditable;
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    }
     else
          return Qt::ItemIsDropEnabled | defaultFlags;
 }
