@@ -103,6 +103,7 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
     connect(_playlistsModel.get(), SIGNAL(PMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_isFragmentEditable(const int&, bool&)), this, SLOT(BASE_isEditionAccepted(const int, bool&))); // providing information to fragment model if fragment can be edited
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_isFragmentMovable(const int&, bool&)), this, SLOT(BASE_isEditionAccepted(const int, bool&))); // providing information to fragment model if fragment can be moved within playlist
 }
 
 /*!

@@ -37,7 +37,8 @@ public slots:
 signals:
     void FMODEL_appendFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // demands mediabase to append toBeCopied fragments into its global fragments list and return pointers to them
     void FMODEL_saveDatabase(); // sends signal to save base to database
-    void FMODEL_isFragmentEditable(const int& playlist_id, bool& flag) const; // demands information if fragment from provided playlist can be deleted
+    void FMODEL_isFragmentEditable(const int& playlist_id, bool& flag) const; // demands information if fragment from provided playlist can be edited
+    void FMODEL_isFragmentMovable(const int& playlist_id, bool& flag) const; // demands information if fragment from provided playlist can be moved
 
 private:
     CMFragmentsMap* _listPointer; // keeps pointer to fragment map of current playlist

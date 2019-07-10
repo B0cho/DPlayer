@@ -128,8 +128,12 @@ bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     Q_UNUSED(row);
     Q_UNUSED(parent);
     Q_UNUSED(column);
+    // checking if move within playlist is accepted
+    bool isMovable;
+    emit FMODEL_isFragmentMovable(playlistID, isMovable);
+
     // if data and format is correct
-    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType) && playlistID)
+    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType) && isMovable)
         return true;
     else
         return false;
