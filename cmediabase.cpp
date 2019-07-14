@@ -590,7 +590,30 @@ void CMediaBase::loadFragments(QSqlQuery *query)
         if(playlist != _playlists->end() && flag && std::any_of(_directoriesPtr->cbegin(), _directoriesPtr->cend(),
                                [&file](const QDir directory)->bool{ return  file->file().absoluteFilePath().contains(directory.absolutePath()); }))
         {
+            // adding to fragments
             _fragments->append(*file);
+
+            // finding file duration
+            /* due to scope-independent way of duration loading (see setMedia - QMediaPlayer)
+             * it is necessary to allow finding this value out of this function
+             */
+            CMediaFragment& last_fragment = _fragments->back();
+            boost::shared_ptr<QMediaPlayer> player(new QMediaPlayer);
+            const QUrl url = QUrl::fromLocalFile(path);
+
+            // binding player signal with lambda, that sets duration to the fragment
+            connect(player.get(), &QMediaPlayer::mediaStatusChanged, [&last_fragment, player](QMediaPlayer::MediaStatus status){
+                // if media is loaded
+                if(status == QMediaPlayer::MediaStatus::LoadedMedia)
+                {
+                    const bool result = last_fragment.setDuration(player->duration());
+                    if(!result); /// add exception!
+                }
+            });
+            // set individual player to load media
+            player->setMedia(QMediaContent(url));
+
+            // adding fragment to playlist
             playlist->addFragment(&_fragments->back(), playlist_pos);
 
             // remove *file from filesList

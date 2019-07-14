@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QAbstractListModel>
+#include <QTime>
+#include <QFont>
 #include "cmediaplaylist.h"
 #include "cinternalmime.h"
 

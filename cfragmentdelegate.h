@@ -2,6 +2,11 @@
 #define CFRAGMENTDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QObject>
+#include <QDebug>
+#include <QPainter>
+#include <QApplication>
+#include <QMargins>
 
 /*
  * Class representing fragment delegate.
@@ -16,7 +21,7 @@ class CFragmentDelegate : public QStyledItemDelegate
 private:
     // default item properties
     static constexpr QSize itemSize{100, 50};
-    static constexpr QMargins itemMargins{2, 2, 2, 2};
+    static constexpr QMargins itemMargins = QMargins(2, 2, 2, 2);
 public:
     CFragmentDelegate(QWidget* parent = 0);
 

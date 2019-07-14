@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <boost/smart_ptr.hpp>
 #include <QItemSelection>
+#include <QMediaPlayer>
+#include <QMediaMetaData>
 #include "cmediafragment.h"
 #include "cmediaplaylist.h"
 #include "cplaylistsmodel.h"

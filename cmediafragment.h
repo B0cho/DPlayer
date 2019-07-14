@@ -38,14 +38,21 @@ public:
     QString desc() const;
     void setDesc(const QString desc);
 
+    QTime getStart() const; // returns time, when fragment of file starts
+    QTime getEnd() const; // returns time, when fragment of file ends
+
     /// scope of fragment
     static const qint16 startScope = 0;
     static const qint16 endScope = 1000;
+
+    qint64 getDuration() const; // return duration of file in ms
+    bool setDuration(const qint64 &duration); // sets duration of file only when it was not earlier set - if succeeded return true
 
 private:
     /// members
     QFileInfo _file; // original file
     QString _title; // fragment title
+    qint64 _duration; // duration of original file in ms
     qint16 _start; // 0 - 1000
     qint16 _end; // 0 - 1000
     QString _desc; // description

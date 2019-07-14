@@ -17,9 +17,21 @@ QVariant CFragmentsModel::data(const QModelIndex &index, int role) const
     if(role == Qt::DisplayRole)
         return _listPointer->value(i)->title();
 
-    // tooltip role - description
+    // tooltip role - file
     if(role == Qt::ToolTipRole)
         return _listPointer->value(i)->desc();
+
+    // status tip role - scope of fragment
+    if(role == Qt::StatusTipRole)
+    {
+        const QTime beg = _listPointer->value(i)->getStart();
+        const QTime end = _listPointer->value(i)->getEnd();
+        return beg.toString("hh:mm:ss") + QString(" - ") + end.toString("hh:mm:ss");
+    }
+
+    // FontRole - dedicated font
+    if(role == Qt::FontRole)
+        return QFont("Calibri");
 
     // if nothing from above complies
     return QVariant();
