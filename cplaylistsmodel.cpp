@@ -243,22 +243,3 @@ int CPlaylistsModel::getRow(const CMediaPlaylist *playlist) const
     }
     return -1;
 }
-
-void CPlaylistsModel::PMODEL_isDeleteAccepted(const QMimeData *data, bool &flag) const
-{    
-    flag = true;
-    // playlist option - when first playlist is dropped
-    if(data->hasFormat(CInternalMime<void>::playlistMimeType))
-        if(dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data)->container.contains(&_pointer->constFirst()))
-            flag = false;
-
-    // fragments option - when any fragment of first playlist is dropped
-    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
-    {
-        const auto fragments = dynamic_cast<const CInternalMime<CMediaFragment>*>(data)->container;
-        const auto firstPlaylist = _pointer.get()->first();
-        if(std::any_of(fragments.cbegin(), fragments.cend(),
-                       [firstPlaylist](const CMediaFragment* frag){ return firstPlaylist.getPosition(frag); }))
-            flag = false;
-    }
-}

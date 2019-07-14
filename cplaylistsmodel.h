@@ -45,10 +45,6 @@ signals:
     void PMODEL_getNewId(int& newId); // demands providing new id for playlist
     void PMODEL_appendFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // demand to append given fragments to be inserted into base
     void PMODEL_saveDatabase(); // signal to save base to database
-
-public slots:
-    void PMODEL_isDeleteAccepted(const QMimeData* data, bool& flag) const; // checks if provided data can be dropped
-
 };
 
 #endif // CPLAYLISTSMODEL_H

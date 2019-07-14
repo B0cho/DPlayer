@@ -94,8 +94,17 @@ Qt::ItemFlags CFragmentsModel::flags(const QModelIndex &index) const
 {
     // Enabled: defaultFlags, drag, drop
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    // checking, if fragment is editable
+    bool isEditable;
+    emit FMODEL_isFragmentEditable(playlistID, isEditable);
+
+    // if everything is valid
     if (index.isValid())
-         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    {
+        if(isEditable)
+            defaultFlags |= Qt::ItemIsEditable;
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    }
     else
          return Qt::ItemIsDropEnabled | defaultFlags;
 }
@@ -131,8 +140,12 @@ bool CFragmentsModel::canDropMimeData(const QMimeData *data, Qt::DropAction acti
     Q_UNUSED(row);
     Q_UNUSED(parent);
     Q_UNUSED(column);
+    // checking if move within playlist is accepted
+    bool isMovable;
+    emit FMODEL_isFragmentMovable(playlistID, isMovable);
+
     // if data and format is correct
-    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType) && playlistID)
+    if(data && data->hasFormat(CInternalMime<void>::fragmentMimeType) && isMovable)
         return true;
     else
         return false;

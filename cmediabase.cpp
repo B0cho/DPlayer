@@ -103,6 +103,8 @@ CMediaBase::CMediaBase(QObject *parent): QObject(parent)
     connect(_playlistsModel.get(), SIGNAL(PMODEL_getNewId(int&)), this, SLOT(BASE_newPlaylistId(int&))); // providing new id to playlists model
     connect(_fragmentsModel.get(), SIGNAL(FMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
     connect(_playlistsModel.get(), SIGNAL(PMODEL_saveDatabase()), this, SLOT(BASE_saveData())); // demand to save database
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_isFragmentEditable(const int&, bool&)), this, SLOT(BASE_isEditionAccepted(const int, bool&))); // providing information to fragment model if fragment can be edited
+    connect(_fragmentsModel.get(), SIGNAL(FMODEL_isFragmentMovable(const int&, bool&)), this, SLOT(BASE_isEditionAccepted(const int, bool&))); // providing information to fragment model if fragment can be moved within playlist
 }
 
 /*!
@@ -486,6 +488,33 @@ void CMediaBase::BASE_newPlaylistId(int &newId) const
     // returns maximum id of playlists items
     const auto maxId = std::max_element(_playlists->cbegin(), _playlists->cend(), [](const auto a, const auto b)->bool{return std::max(a.id(), b.id()); });
     newId = maxId->id() + 1;
+}
+
+void CMediaBase::BASE_isDeleteAccepted(const QMimeData *data, bool &flag) const
+{
+    flag = true;
+    // playlist option - when first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::playlistMimeType))
+        if(dynamic_cast<const CInternalMime<CMediaPlaylist>*>(data)->container.contains(&_playlists->first())) // if mime contains first, default playlist, then false
+            flag = false;
+
+    // fragments option - when any fragment of first playlist is dropped
+    if(data->hasFormat(CInternalMime<void>::fragmentMimeType))
+    {
+        const auto fragments = dynamic_cast<const CInternalMime<CMediaFragment>*>(data)->container;
+        const auto firstPlaylist = _playlists->first();
+        if(std::any_of(fragments.cbegin(), fragments.cend(),
+                       [firstPlaylist](const CMediaFragment* frag){ return firstPlaylist.getPosition(frag); }))
+            flag = false;
+    }
+}
+
+void CMediaBase::BASE_isEditionAccepted(const int playlistID, bool &flag) const
+{
+    flag = true;
+    // checking if playlistID is the same as id of first, default playlist
+    if (playlistID == _playlists->first().id())
+        flag = false;
 }
 
 /*!

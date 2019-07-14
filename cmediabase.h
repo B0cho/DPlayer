@@ -78,6 +78,8 @@ public slots:
     bool BASE_saveData(); // saves data to database
     void BASE_changeFragmentsList(QItemSelection selected, QItemSelection deselected); // changes list of fragments in fragments model
     void BASE_delete(const QMimeData* data); // deletes provided data
+    void BASE_isDeleteAccepted(const QMimeData* data, bool& flag) const; // checks if provided data can be dropped for delete
+    void BASE_isEditionAccepted(const int playlistID, bool& flag) const; // checks if deletion withing playlist of given id is acceptable
 
 private slots:
      void BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // inserts toBeCopied to _fragments and returns pointers to them
