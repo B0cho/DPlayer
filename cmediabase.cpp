@@ -86,6 +86,7 @@
 /*!
  * \brief Default constructor
  */
+
 CMediaBase::CMediaBase(QObject *parent): QObject(parent)
 {
     // containers initialization
@@ -650,7 +651,7 @@ bool CMediaBase::loadPlaylists(QSqlQuery *query)
     qDebug() << "Loading playlists";
 
     // creating default playlist of all fragments
-    _playlists->append(CMediaPlaylist(0, "Wszystkie utwory", "Wszystkie utwory"));
+    _playlists->append(CMediaPlaylist(0, QString(allTitle), QString(allDescription)));
     qDebug() << "> Default playlists added";
 
     // getting playlists from db
