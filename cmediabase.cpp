@@ -637,7 +637,12 @@ void CMediaBase::loadFragments(QSqlQuery *query)
                 if(status == QMediaPlayer::MediaStatus::LoadedMedia)
                 {
                     const bool result = last_fragment.setDuration(player->duration());
-                    if(!result); /// add exception!
+                    // if finding of file duration was not succeded, remove it from list
+                    if(!result)
+                    {
+                        _fragments->pop_back();
+                        continue;
+                    }
                 }
             });
             // set individual player to load media
