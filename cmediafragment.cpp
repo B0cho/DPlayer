@@ -24,8 +24,8 @@ CMediaFragment::CMediaFragment(const int id, const CMediaFragment &toBeCopied)
       _title(toBeCopied.title()),
       _start(toBeCopied.start()),
       _end(toBeCopied.end()),
-      _desc(toBeCopied.desc()),
-      _duration(0)
+      _desc(toBeCopied.file().baseName()),
+      _duration(toBeCopied.getDuration())
 {
 
 }

@@ -21,7 +21,7 @@ public:
     /// ctors
     CMediaFragment(const int id, const QString file_path, const quint64 created, const qint64 file_size);
     CMediaFragment(const int id, const QFileInfo file_info);
-    CMediaFragment(const int id, const CMediaFragment& toBeCopied);
+    CMediaFragment(const int id, const CMediaFragment& toBeCopied); // copying ctr - copies all the data from toBeCopied expect from description - it becomes a title of file
 
     /// methods, getters and setters
     QFileInfo file() const;
