@@ -632,17 +632,14 @@ void CMediaBase::loadFragments(QSqlQuery *query)
             const QUrl url = QUrl::fromLocalFile(path);
 
             // binding player signal with lambda, that sets duration to the fragment
-            connect(player.get(), &QMediaPlayer::mediaStatusChanged, [&last_fragment, player](QMediaPlayer::MediaStatus status){
+            connect(player.get(), &QMediaPlayer::mediaStatusChanged, [&last_fragment, player, this](QMediaPlayer::MediaStatus status){
                 // if media is loaded
                 if(status == QMediaPlayer::MediaStatus::LoadedMedia)
                 {
                     const bool result = last_fragment.setDuration(player->duration());
                     // if finding of file duration was not succeded, remove it from list
                     if(!result)
-                    {
-                        _fragments->pop_back();
-                        continue;
-                    }
+                        _fragments->removeOne(last_fragment);
                 }
             });
             // set individual player to load media

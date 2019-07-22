@@ -23,6 +23,8 @@ public:
     CMediaFragment(const int id, const QFileInfo file_info);
     CMediaFragment(const int id, const CMediaFragment& toBeCopied); // copying ctr - copies all the data from toBeCopied expect from description - it becomes a title of file
 
+    /// operators
+    bool operator ==(const CMediaFragment& b);
     /// methods, getters and setters
     QFileInfo file() const;
 

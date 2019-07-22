@@ -30,6 +30,11 @@ CMediaFragment::CMediaFragment(const int id, const CMediaFragment &toBeCopied)
 
 }
 
+bool CMediaFragment::operator ==(const CMediaFragment &b)
+{
+    return id() == b.id();
+}
+
 QFileInfo CMediaFragment::file() const
 {
     return _file;
