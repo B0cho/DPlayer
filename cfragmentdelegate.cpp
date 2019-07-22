@@ -44,3 +44,18 @@ QSize CFragmentDelegate::sizeHint(const QStyleOptionViewItem &option, const QMod
     Q_UNUSED(index);
     return itemSize;
 }
+
+QWidget *CFragmentDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+
+}
+
+void CFragmentDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+
+}
+
+void CFragmentDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+
+}
