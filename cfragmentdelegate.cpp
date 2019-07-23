@@ -47,15 +47,37 @@ QSize CFragmentDelegate::sizeHint(const QStyleOptionViewItem &option, const QMod
 
 QWidget *CFragmentDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(option);
 
+    QWidget* widget = new QWidget(parent);
+    QVBoxLayout* layout = new QVBoxLayout();
+    QLineEdit* titleEdit = new QLineEdit();
+    auto font = index.data(Qt::FontRole).value<QFont>();
+
+    // setting title edit
+    font.setBold(true);
+    titleEdit->setFont(font);
+    titleEdit->setFixedHeight(15);
+    titleEdit->setFrame(false);
+
+    // bulding layout
+    layout->setContentsMargins(itemMargins);
+    layout->addWidget(titleEdit);
+    layout->addSpacing(80);
+
+    // setting layout and returning widget
+    widget->setLayout(layout);
+    return widget;
 }
 
 void CFragmentDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-
+    QLineEdit* titleEdit = qobject_cast<QLineEdit*>(editor->layout()->itemAt(0)->widget());
+    titleEdit->setText(index.data(Qt::DisplayRole).toString());
 }
 
 void CFragmentDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-
+    const auto titleEdit = qobject_cast<QLineEdit*>(editor->layout()->itemAt(0)->widget());
+    model->setData(index, titleEdit->text());
 }

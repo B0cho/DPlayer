@@ -7,6 +7,9 @@
 #include <QPainter>
 #include <QApplication>
 #include <QMargins>
+#include <QLineEdit>
+#include <memory>
+#include <QVBoxLayout>
 
 /*
  * Class representing fragment delegate.
@@ -22,6 +25,7 @@ private:
     // default item properties
     static constexpr QSize itemSize{100, 50};
     static constexpr QMargins itemMargins = QMargins(2, 2, 2, 2);
+
 public:
     CFragmentDelegate(QWidget* parent = 0);
 
