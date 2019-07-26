@@ -11,13 +11,15 @@
 
 /// FRAGMENTS MODEL
 typedef QMap<int, const CMediaFragment*> CMFragmentsMap;
+typedef QList<CMediaFragment> CMFragmentsQList;
 class CFragmentsModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
     /// model things
-    CFragmentsModel();
+    CFragmentsModel(const boost::shared_ptr<CMFragmentsQList> fragmentsList);
     QVariant data(const QModelIndex &index, int role) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
     int rowCount(const QModelIndex &parent) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
@@ -43,8 +45,10 @@ signals:
     void FMODEL_isFragmentMovable(const int& playlist_id, bool& flag) const; // demands information if fragment from provided playlist can be moved
 
 private:
-    CMFragmentsMap* _listPointer; // keeps pointer to fragment map of current playlist
+    CMFragmentsMap* _listPointer; // keeps pointer to fragment map of current playlist in order to modify playlists
     int playlistID; // ID of current playlist
+    const boost::shared_ptr<CMFragmentsQList> _fragments; // keeps pointer to all fragments in order to modify fragments
+
 
 };
 

@@ -1,8 +1,10 @@
 #include "cfragmentsmodel.h"
 
-CFragmentsModel::CFragmentsModel()
+CFragmentsModel::CFragmentsModel(const boost::shared_ptr<CMFragmentsQList> fragmentsList):
+    _fragments(fragmentsList),
+    _listPointer(nullptr)
 {
-    _listPointer = nullptr;
+    //
 }
 
 QVariant CFragmentsModel::data(const QModelIndex &index, int role) const
@@ -37,8 +39,32 @@ QVariant CFragmentsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool CFragmentsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if(role != Qt::EditRole || !index.isValid())
+        return false;
+
+    // finding id of the edited fragment
+    const auto id = _listPointer->value(index.row() + 1)->id();
+
+    // finding iterator of fragment
+    auto toBeEdited = std::find_if(_fragments->begin(), _fragments->end(),
+                                   [id](const CMediaFragment fragment) {
+                                            return fragment.id() == id; });
+    // if no fragment was found
+    if(toBeEdited == _fragments->end())
+        return false;
+
+    // editing
+    toBeEdited->setTitle(value.toString());
+
+    emit dataChanged(index, index, {role});
+    return true;
+}
+
 int CFragmentsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return (_listPointer) ? _listPointer->count() : 0;
 }
 

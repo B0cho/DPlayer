@@ -23,7 +23,7 @@
 
 /// REPRESENTS WHOLE DATA - SETTINGS, MEDIAS AND MANAGES THEM
 // typedefs
-typedef QList<CMediaFragment> CMFragmentsQList;
+//typedef QList<CMediaFragment> CMFragmentsQList;
 typedef QList<CMediaPlaylist> CMPlaylistQList;
 class CMediaBase: public QObject
 {
@@ -54,7 +54,7 @@ private:
     boost::shared_ptr<CFragmentsModel> _fragmentsModel;
 
     /// members
-    std::unique_ptr<CMFragmentsQList> _fragments; // ptr to Qlist of fragments
+    boost::shared_ptr<CMFragmentsQList> _fragments; // ptr to Qlist of fragments
     boost::shared_ptr<CMPlaylistQList> _playlists; // ptr to Qlist of playlists
     std::unique_ptr<QSqlDatabase> _database; // ptr to database, that includes settings etc.
     const QList<QDir>* _directoriesPtr; // list of directories, that contain media

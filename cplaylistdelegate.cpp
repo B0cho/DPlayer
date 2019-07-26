@@ -124,7 +124,6 @@ CPlaylistDelegate::playlistEditorWidget::playlistEditorWidget(const QFont& title
 
     // description
     descr_ptr->resize(100, 15);
-    //descr_ptr->move(margin);
     descr_ptr->setFrame(false);
     title_ptr->setFont(descriptionFont);
 
