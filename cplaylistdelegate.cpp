@@ -66,7 +66,7 @@ QWidget *CPlaylistDelegate::createEditor(QWidget *parent, const QStyleOptionView
 
     // put alignment inside option
     // give margins
-    return new playlistEditorWidget(getFont(font, fontType::titleFont), getFont(font, fontType::descriptionFont), getFont(font, fontType::statusFont), option, margin, parent);
+    return new playlistEditorWidget(getFont(font, titleFont), getFont(font, descriptionFont), getFont(font, statusFont), option, margin, parent);
 }
 
 void CPlaylistDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -89,12 +89,13 @@ void CPlaylistDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
     // convering editor
     const auto editorWidget = qobject_cast<playlistEditorWidget*>(editor);
-
+    const auto newTitle = editorWidget->getTitle();
+    const auto newDescription = editorWidget->getDescription();
     // updating data
     // title
-    model->setData(index, editorWidget->getTitle());
+    model->setData(index, newTitle, Qt::DisplayRole);
     // description
-    model->setData(index, editorWidget->getDescription(), Qt::ToolTipRole);
+    model->setData(index, newDescription, Qt::ToolTipRole);
 }
 
 /*
@@ -120,7 +121,7 @@ CPlaylistDelegate::playlistEditorWidget::playlistEditorWidget(const QFont& title
     // title line
     title_ptr->resize(150, 15);
     title_ptr->setFrame(false);
-    title_ptr->setFont(title);
+    title_ptr->setFont(titleFont);
 
     // description
     descr_ptr->resize(100, 15);

@@ -100,14 +100,31 @@ bool CPlaylistsModel::removeRows(int row, int count, const QModelIndex &parent)
 
 bool CPlaylistsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (index.isValid() && role == Qt::EditRole) {
-              qDebug() << "> Setting data";
-              CMediaPlaylist& item = _pointer->operator [](index.row());
-              item.title = value.toString();
-              emit dataChanged(index, index, {role});
-              return true;
-          }
-          return false;
+    // validation
+    if(!index.isValid())
+        return false;
+
+    // getting playlist that is to be edited
+    CMediaPlaylist& item = _pointer->operator [](index.row());
+
+    switch (role) {
+    // title
+    case Qt::DisplayRole:
+        qDebug() << "Setting data - playlist title:" << value.toString();
+        item.title = value.toString();
+        break;
+     // descritpion
+     case Qt::ToolTipRole:
+        qDebug() << "Setting data - playlist description:" << value.toString();
+        item.description = value.toString();
+        break;
+    default:
+        return false;
+        break;
+    }
+
+    emit dataChanged(index, index, {role});
+    return true;
 }
 
 Qt::ItemFlags CPlaylistsModel::flags(const QModelIndex &index) const

@@ -215,7 +215,7 @@ CMediaFragment* CMediaBase::newMediaFile(const QFileInfo file_info) const
     // setting default values
     file->setStart(CMediaFragment::startScope);
     file->setEnd(CMediaFragment::endScope);
-    file->setDesc("Raw fragment");
+    file->setDesc("File");
     file->setTitle(file_info.baseName());
     return file;
 }
@@ -623,27 +623,8 @@ void CMediaBase::loadFragments(QSqlQuery *query)
             // adding to fragments
             _fragments->append(*file);
 
-            // finding file duration
-            /* due to scope-independent way of duration loading (see setMedia - QMediaPlayer)
-             * it is necessary to allow finding this value out of this function
-             */
-            CMediaFragment& last_fragment = _fragments->back();
-            boost::shared_ptr<QMediaPlayer> player(new QMediaPlayer);
-            const QUrl url = QUrl::fromLocalFile(path);
-
-            // binding player signal with lambda, that sets duration to the fragment
-            connect(player.get(), &QMediaPlayer::mediaStatusChanged, [&last_fragment, player, this](QMediaPlayer::MediaStatus status){
-                // if media is loaded
-                if(status == QMediaPlayer::MediaStatus::LoadedMedia)
-                {
-                    const bool result = last_fragment.setDuration(player->duration());
-                    // if finding of file duration was not succeded, remove it from list
-                    if(!result)
-                        _fragments->removeOne(last_fragment);
-                }
-            });
-            // set individual player to load media
-            player->setMedia(QMediaContent(url));
+            // finding fragment duration
+            setFragmentDuration(_fragments->back());
 
             // adding fragment to playlist
             playlist->addFragment(&_fragments->back(), playlist_pos);
@@ -664,7 +645,11 @@ void CMediaBase::loadFragments(QSqlQuery *query)
         {
             // file
             qDebug() << ">> " << file->file().absoluteFilePath();
+
+            // adding fragment to fragments list
             _fragments->append(*file);
+            //finding new file fragment duration and setting it
+            setFragmentDuration(_fragments->back());
 
             // first, default playlist
             CMediaPlaylist& default_playlist = _playlists->first(); // getting first playlist - default
@@ -694,6 +679,25 @@ bool CMediaBase::loadPlaylists(QSqlQuery *query)
         _playlists->append(playlist);
     }
     qDebug() << "PLAYLISTS loaded";
+}
+
+void CMediaBase::setFragmentDuration(CMediaFragment &fragment)
+{
+    /* due to scope-independent way of duration loading (see setMedia - QMediaPlayer)
+     * it is necessary to allow finding this value out of this function
+     */
+
+    boost::shared_ptr<QMediaPlayer> player(new QMediaPlayer);
+    const QUrl url = QUrl::fromLocalFile(fragment.file().absoluteFilePath());
+
+    // binding player signal with lambda, that sets duration to the fragment
+    connect(player.get(), &QMediaPlayer::mediaStatusChanged, [&fragment, player](QMediaPlayer::MediaStatus status){
+        // if media is loaded
+        if(status == QMediaPlayer::MediaStatus::LoadedMedia)
+            fragment.setDuration(player->duration());
+            });
+    // set individual player to load media
+    player->setMedia(QMediaContent(url));
 }
 
 /*!

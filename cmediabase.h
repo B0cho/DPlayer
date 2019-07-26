@@ -70,6 +70,7 @@ private:
     // loading: method names explain everything
     void loadFragments(QSqlQuery* query); // loads fragments from database to _fragments
     bool loadPlaylists(QSqlQuery* query); // loads playlists from database to _playlists
+    static void setFragmentDuration(CMediaFragment& fragment);
 
 public slots:
     bool BASE_loadDatabase(const QFileInfo database_path, const QList<QDir>* dirs, const QStringList* extensions); // checks and opens database file
