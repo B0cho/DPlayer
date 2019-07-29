@@ -59,7 +59,7 @@ private:
     std::unique_ptr<QSqlDatabase> _database; // ptr to database, that includes settings etc.
     const QList<QDir>* _directoriesPtr; // list of directories, that contain media
     const QStringList* _extensions; // list of used extensions
-    const QString DBfileName =  "dziobakplayerDB.db"; // default name of database file
+    const QString DBfileName =  "DplayerDB.db"; // default name of database file
 
     /// methods
     bool addDatabase(const QString path); // adds and opens db

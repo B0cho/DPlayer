@@ -125,7 +125,7 @@
     <item>
      <widget class="QLabel" name="label_database">
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DziobakPlayer will create a SQLite3 database in given directory.&lt;/p&gt;&lt;p&gt;It can be deleted in application &lt;span style=&quot; font-weight:600;&quot;&gt;settings.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;DPlayer will create a SQLite3 database in given directory.&lt;/p&gt;&lt;p&gt;It can be deleted in application &lt;span style=&quot; font-weight:600;&quot;&gt;settings.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="margin">
        <number>4</number>

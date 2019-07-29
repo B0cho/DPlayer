@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     /// app initiation
     QApplication a(argc, argv);
-    QCoreApplication::setApplicationName("DziobakPlayer");
+    QCoreApplication::setApplicationName("DPlayer");
     QCoreApplication::setApplicationVersion("1.0");
     QCoreApplication::setOrganizationName("Bocho");
 

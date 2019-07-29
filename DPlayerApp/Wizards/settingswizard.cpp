@@ -34,7 +34,7 @@
  * \endtable
  * where first and last are nested in wizard QML.
  *
- * Youtube account page is prepared to provide YT account login in further versions of DziobakPlayer.
+ * Youtube account page is prepared to provide YT account login in further versions of DPlayer.
  *
  * Wizard window is intended to be launched as \b {modal} at first application launch.
  * Thanks to data routing with slots and signals, is completely separated from its host.

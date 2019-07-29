@@ -8,7 +8,7 @@ QT       += core gui sql multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = DziobakPlayer
+TARGET = DPlayerApp
 TEMPLATE = app
 CONFIG += c++11 c++14
 

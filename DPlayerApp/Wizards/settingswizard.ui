@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Welcome to DziobakPlayer!</string>
+   <string>Welcome to DPlayer!</string>
   </property>
   <property name="toolTip">
    <string/>
@@ -146,7 +146,7 @@
     <string>Database first!</string>
    </property>
    <property name="subTitle">
-    <string>DziobakPlayer uses SQLite3 database to store your preferences!</string>
+    <string>DPlayer uses SQLite3 database to store your preferences!</string>
    </property>
   </widget>
   <widget class="dirsWizardPage" name="dirsPage">
