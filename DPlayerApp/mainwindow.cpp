@@ -19,10 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     settings(new CSettings(this)), // settings initialization
-    base(new CMediaBase(this)) // base initialization
+    base(new CMediaBase(this)), // base initialization
+    searchWidget(new CSearchWidget(this)) // search widget init
 {
     qDebug() << "Initializing main window..";
     ui->setupUi(this);
+
+    // adding custom widgets
+    // search widget
+    ui->horizontalLayout->insertWidget(0, searchWidget.get()); // adding to layout
+    searchWidget->show(); // showing
 
     // connections
     qDebug() << "> Setting connections";
@@ -56,7 +62,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // settings controls
     ui->dropSiteLabel->setFormats({CInternalMime<void>::fragmentMimeType, CInternalMime<void>::playlistMimeType}); // setting formats of dropSite accepted formats
-
 }
 
 /*!

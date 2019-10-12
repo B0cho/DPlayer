@@ -15,6 +15,7 @@
 #include "cmediabase.h"
 #include "cplaylistdelegate.h"
 #include "cfragmentdelegate.h"
+#include "csearchwidget.h"
 
 /// MAIN WINDOW
 namespace Ui {
@@ -36,6 +37,7 @@ private:
     /// members
     CSettings* const settings; // settings of app
     CMediaBase* const base; // media library
+    const boost::shared_ptr<CSearchWidget> searchWidget; // search widget ptr
 
 public slots:
     void WIND_DBErrorNotify(const bool loaded) const; // throws notify about database file load error
