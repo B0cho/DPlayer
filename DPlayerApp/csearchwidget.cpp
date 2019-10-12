@@ -18,4 +18,13 @@ CSearchWidget::CSearchWidget(QWidget *parent):
 
     // setting widgets
     suggestionView->hide();
+    lineEdit->setPlaceholderText("Search for fragments or playlists...");
+
+    // connections
+    connect(lineEdit.get(), SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&))); // when line edit has changed
+}
+
+void CSearchWidget::textChanged(const QString &text)
+{
+
 }

@@ -18,8 +18,12 @@ class CSearchWidget: public QWidget
 private:
     // widgets
     const std::unique_ptr<QVBoxLayout> layout; // layout
-    const std::unique_ptr<QListView> suggestionView; // list with suggestions
     const std::unique_ptr<QLineEdit> lineEdit; // edit to type
+    const std::unique_ptr<QListView> suggestionView; // list with suggestions
+
+
+private slots:
+    void textChanged(const QString& text); // launched when text in line edit changes
 
 public:
     CSearchWidget(QWidget* parent = 0);
