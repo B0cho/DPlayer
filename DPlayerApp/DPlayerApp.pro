@@ -40,7 +40,8 @@ SOURCES += \
     cdropsitelabel.cpp \
     cplaylistdelegate.cpp \
     cfragmentdelegate.cpp \
-    csearchwidget.cpp
+    csearchwidget.cpp \
+    creadonlycombinedmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -58,7 +59,8 @@ HEADERS += \
     cdropsitelabel.h \
     cplaylistdelegate.h \
     cfragmentdelegate.h \
-    csearchwidget.h
+    csearchwidget.h \
+    creadonlycombinedmodel.h
 
 FORMS += \
         mainwindow.ui \
