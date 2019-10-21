@@ -26,5 +26,10 @@ CSearchWidget::CSearchWidget(QWidget *parent):
 
 void CSearchWidget::textChanged(const QString &text)
 {
-
+    if(text.size())
+    {
+        suggestionView->show();
+    }
+    else
+        suggestionView->hide();
 }
