@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    DPlayerApp
+    DPlayerApp \
+    CReadOnlyCombinedModel
