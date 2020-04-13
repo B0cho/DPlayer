@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QMargins>
 #include <QVBoxLayout>
+#include <QPaintEvent>
 #include "cplaylistsmodel.h"
 
 /*

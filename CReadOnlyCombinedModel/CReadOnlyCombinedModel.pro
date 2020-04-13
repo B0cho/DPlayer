@@ -34,3 +34,7 @@ INCLUDEPATH += ../DPlayerApp/
 
 HEADERS += \
         ../DPlayerApp/creadonlycombinedmodel.h \
+
+win32 {
+    INCLUDEPATH += D:/boost_1_72_0
+}
