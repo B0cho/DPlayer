@@ -16,6 +16,7 @@
 #include "cplaylistdelegate.h"
 #include "cfragmentdelegate.h"
 #include "csearchwidget.h"
+#include "creadonlycombinedmodel.h"
 
 /// MAIN WINDOW
 namespace Ui {

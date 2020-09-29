@@ -24,6 +24,11 @@ CSearchWidget::CSearchWidget(QWidget *parent):
     connect(lineEdit.get(), SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&))); // when line edit has changed
 }
 
+void CSearchWidget::setModel(QAbstractItemModel *model)
+{
+    suggestionView->setModel(model);
+}
+
 void CSearchWidget::textChanged(const QString &text)
 {
     if(text.size())

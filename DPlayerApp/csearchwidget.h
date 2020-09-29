@@ -27,6 +27,8 @@ private slots:
 
 public:
     CSearchWidget(QWidget* parent = 0);
+    void setModel(QAbstractItemModel* model);
+
 };
 
 #endif // CSEARCHWIDGET_H
