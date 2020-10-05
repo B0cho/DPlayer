@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    callfragmentsmodel.cpp \
         main.cpp \
         mainwindow.cpp \
     csettings.cpp \
@@ -43,6 +44,7 @@ SOURCES += \
     creadonlycombinedmodel.cpp
 
 HEADERS += \
+    callfragmentsmodel.h \
         mainwindow.h \
     csettings.h \
     Wizards/settingswizard.h \

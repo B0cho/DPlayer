@@ -20,6 +20,7 @@
 #include "cmediaplaylist.h"
 #include "cplaylistsmodel.h"
 #include "cfragmentsmodel.h"
+#include "callfragmentsmodel.h"
 
 /// REPRESENTS WHOLE DATA - SETTINGS, MEDIAS AND MANAGES THEM
 // typedefs
@@ -43,6 +44,7 @@ public:
     /// models access
     boost::shared_ptr<CPlaylistsModel> getPlaylistsModel() const; // returns playlist model
     boost::shared_ptr<CFragmentsModel> getFragmentsModel() const; // returns fragments model
+    boost::shared_ptr<CAllFragmentsModel> getAllFragmentsModel() const;
 
 private:
     /// default strings - values put below the class
@@ -52,6 +54,7 @@ private:
     /// models
     boost::shared_ptr<CPlaylistsModel> _playlistsModel;
     boost::shared_ptr<CFragmentsModel> _fragmentsModel;
+    boost::shared_ptr<CAllFragmentsModel> _allFragmentsModel;
 
     /// members
     boost::shared_ptr<CMFragmentsQList> _fragments; // ptr to Qlist of fragments

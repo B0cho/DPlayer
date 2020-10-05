@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // setting models
     ui->playlists_listView->setModel(base->getPlaylistsModel().get());
     ui->fragments_listView->setModel(base->getFragmentsModel().get());
-    searchWidget->setModel(new CReadOnlyCombinedModel({base->getFragmentsModel(), base->getPlaylistsModel()}));
+    searchWidget->setModel(new CReadOnlyCombinedModel({base->getAllFragmentsModel(), base->getPlaylistsModel()}));
 
     // setting delegates
     ui->playlists_listView->setItemDelegate(new CPlaylistDelegate);
