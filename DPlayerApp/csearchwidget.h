@@ -26,12 +26,14 @@ private:
     QSortFilterProxyModel proxyModel;
 
 
+
 private slots:
     void textChanged(const QString& text); // launched when text in line edit changes
 
 public:
     CSearchWidget(QWidget* parent = 0);
     void setModel(QAbstractItemModel* model);
+    void setItemDelegate(QAbstractItemDelegate* delegate);
 
 };
 

@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // setting delegates
     ui->playlists_listView->setItemDelegate(new CPlaylistDelegate);
     ui->fragments_listView->setItemDelegate(new CFragmentDelegate);
+    searchWidget->setItemDelegate(new CSearchListDelegate);
 
     // connections between models, base and controls
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model

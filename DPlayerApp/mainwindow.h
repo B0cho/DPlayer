@@ -17,6 +17,7 @@
 #include "cfragmentdelegate.h"
 #include "csearchwidget.h"
 #include "creadonlycombinedmodel.h"
+#include "csearchlistdelegate.h"
 
 /// MAIN WINDOW
 namespace Ui {

@@ -31,6 +31,11 @@ void CSearchWidget::setModel(QAbstractItemModel *model)
     suggestionView->setModel(&proxyModel);
 }
 
+void CSearchWidget::setItemDelegate(QAbstractItemDelegate *delegate)
+{
+    suggestionView->setItemDelegate(delegate);
+}
+
 void CSearchWidget::textChanged(const QString &text)
 {
     if(text.size())
