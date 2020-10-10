@@ -11,6 +11,7 @@
 #include <QListView>
 #include <QLineEdit>
 #include <memory>
+#include <QSortFilterProxyModel>
 
 class CSearchWidget: public QWidget
 {
@@ -20,6 +21,9 @@ private:
     const std::unique_ptr<QVBoxLayout> layout; // layout
     const std::unique_ptr<QLineEdit> lineEdit; // edit to type
     const std::unique_ptr<QListView> suggestionView; // list with suggestions
+
+    // proxy model for search
+    QSortFilterProxyModel proxyModel;
 
 
 private slots:

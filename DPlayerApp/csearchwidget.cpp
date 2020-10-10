@@ -4,7 +4,8 @@ CSearchWidget::CSearchWidget(QWidget *parent):
     QWidget(parent),
     layout(new QVBoxLayout(this)), // layout init
     lineEdit(new QLineEdit()), // edit init
-    suggestionView(new QListView()) // list init
+    suggestionView(new QListView()), // list init
+    proxyModel(this)
 {
     // setting layout size policy
     auto sp_retain = suggestionView->sizePolicy();
@@ -26,7 +27,8 @@ CSearchWidget::CSearchWidget(QWidget *parent):
 
 void CSearchWidget::setModel(QAbstractItemModel *model)
 {
-    suggestionView->setModel(model);
+    proxyModel.setSourceModel(model);
+    suggestionView->setModel(&proxyModel);
 }
 
 void CSearchWidget::textChanged(const QString &text)
@@ -34,6 +36,8 @@ void CSearchWidget::textChanged(const QString &text)
     if(text.size())
     {
         suggestionView->show();
+        proxyModel.setFilterRegExp(QRegExp(text));
+        proxyModel.sort(0);
     }
     else
         suggestionView->hide();
