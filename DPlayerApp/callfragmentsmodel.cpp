@@ -43,5 +43,5 @@ const CMediaPlaylist *CAllFragmentsModel::findPlaylist(const CMediaFragment *fra
 {
     const auto playlist = std::find_if(_playlists->cbegin(), _playlists->cend(), [=](const CMediaPlaylist i)->bool{
         return i.getPosition(fragment) != 0; });
-    return &*playlist;
+    return (playlist != _playlists->cend()) ? &*playlist : nullptr;
 }
