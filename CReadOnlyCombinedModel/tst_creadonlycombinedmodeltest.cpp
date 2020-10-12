@@ -60,7 +60,6 @@ private Q_SLOTS:
     void rowCount();
     void flags();
     void columnCount();
-    //void index();
     void childModelIndex();
     void data();
 };
@@ -305,67 +304,6 @@ void CReadOnlyCombinedModelTest::data()
     QCOMPARE(three_models.data(three_models.index(12500)), QVariant(submodels[3]->index(12339)));
     QCOMPARE(three_models.data(three_models.index(12530)), QVariant());
 }
-
-/*
-void CReadOnlyCombinedModelTest::index()
-{
-    /// mocking
-    CReadOnlyCombinedModel no_model({});    // no model attached
-    CReadOnlyCombinedModel empty_model({submodels[0]});    // one empty model
-    CReadOnlyCombinedModel one_model({submodels[1]});   // one model
-    CReadOnlyCombinedModel one_empty_model({submodels[0], submodels[1]});     // two models, one empty
-    CReadOnlyCombinedModel two_models({submodels[1], submodels[2]});   // two models
-    CReadOnlyCombinedModel three_models({submodels[1], submodels[2], submodels[3]});     // three models
-
-    /// testing
-    // NO MODEL
-    QCOMPARE(no_model.index(-1), QModelIndex());
-    QCOMPARE(no_model.index(0), QModelIndex());
-    QCOMPARE(no_model.index(8), QModelIndex());
-    QCOMPARE(no_model.index(200), QModelIndex());
-
-    // EMPTY MODEL
-    QCOMPARE(empty_model.index(-1), QModelIndex());
-    QCOMPARE(empty_model.index(0), QModelIndex());
-    QCOMPARE(empty_model.index(8), QModelIndex());
-    QCOMPARE(empty_model.index(200), QModelIndex());
-
-    // ONE MODEL
-    QCOMPARE(one_model.index(-1), QModelIndex());
-    QCOMPARE(one_model.index(0).internalPointer(), submodels[1]->index(0).internalPointer());
-    QCOMPARE(one_model.index(8).internalPointer(), submodels[1]->index(8).internalPointer());
-    QCOMPARE(one_model.index(150).internalPointer(), submodels[1]->index(150).internalPointer());
-    QCOMPARE(one_model.index(160), QModelIndex());
-
-    // ONE EMPTY MODEL
-    QCOMPARE(one_empty_model.index(-1), QModelIndex());
-    QCOMPARE(one_empty_model.index(0).internalPointer(), submodels[1]->index(0).internalPointer());
-    QCOMPARE(one_empty_model.index(8).internalPointer(), submodels[1]->index(8).internalPointer());
-    QCOMPARE(one_empty_model.index(150).internalPointer(), submodels[1]->index(150).internalPointer());
-    QCOMPARE(one_empty_model.index(160), QModelIndex());
-
-    // TWO MODELS
-    QCOMPARE(two_models.index(-1), QModelIndex());
-    QCOMPARE(two_models.index(0).internalPointer(), submodels[1]->index(0).internalPointer());
-    QCOMPARE(two_models.index(8).internalPointer(), submodels[1]->index(8).internalPointer());
-    QCOMPARE(two_models.index(150).internalPointer(), submodels[1]->index(150).internalPointer());
-    QCOMPARE(two_models.index(155).internalPointer(), submodels[2]->index(2).internalPointer());
-    QCOMPARE(two_models.index(160).internalPointer(), submodels[2]->index(7).internalPointer());
-    QCOMPARE(two_models.index(180), QModelIndex());
-
-    // THREE MODELS
-    QCOMPARE(three_models.index(-1), QModelIndex());
-    QCOMPARE(three_models.index(0).internalPointer(), submodels[1]->index(0).internalPointer());
-    QCOMPARE(three_models.index(8).internalPointer(), submodels[1]->index(8).internalPointer());
-    QCOMPARE(three_models.index(150).internalPointer(), submodels[1]->index(150).internalPointer());
-    QCOMPARE(three_models.index(155).internalPointer(), submodels[2]->index(2).internalPointer());
-    QCOMPARE(three_models.index(160).internalPointer(), submodels[2]->index(7).internalPointer());
-    QCOMPARE(three_models.index(168).internalPointer(), submodels[3]->index(7).internalPointer());
-    QCOMPARE(three_models.index(1200).internalPointer(), submodels[3]->index(1039).internalPointer());
-    QCOMPARE(three_models.index(12500).internalPointer(), submodels[3]->index(12339).internalPointer());
-    QCOMPARE(three_models.index(12530), QModelIndex());
-}
-*/
 
 QTEST_APPLESS_MAIN(CReadOnlyCombinedModelTest)
 
