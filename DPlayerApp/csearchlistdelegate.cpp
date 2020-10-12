@@ -30,7 +30,6 @@ void CSearchListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     // description
     painter->setFont(descriptionFont);
     QApplication::style()->drawItemText(painter, rect, Qt::AlignLeft | Qt::AlignBottom, option.palette, true, description);
-
 }
 
 QSize CSearchListDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

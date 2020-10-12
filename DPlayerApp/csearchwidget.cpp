@@ -3,8 +3,8 @@
 CSearchWidget::CSearchWidget(QWidget *parent):
     QWidget(parent),
     layout(new QVBoxLayout(this)), // layout init
-    lineEdit(new QLineEdit()), // edit init
-    suggestionView(new QListView()), // list init
+    lineEdit(new QLineEdit(this)), // edit init
+    suggestionView(new QListView(this)), // list init
     proxyModel(this)
 {
     // setting layout size policy

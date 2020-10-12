@@ -44,7 +44,7 @@ public:
     /// models access
     boost::shared_ptr<CPlaylistsModel> getPlaylistsModel() const; // returns playlist model
     boost::shared_ptr<CFragmentsModel> getFragmentsModel() const; // returns fragments model
-    boost::shared_ptr<CAllFragmentsModel> getAllFragmentsModel() const;
+    boost::shared_ptr<CAllFragmentsModel> getAllFragmentsModel() const; // returns model with all fragments
 
 private:
     /// default strings - values put below the class
