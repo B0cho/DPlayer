@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     callfragmentsmodel.cpp \
+    cplayerwidget.cpp \
     csearchlistdelegate.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
 
 HEADERS += \
     callfragmentsmodel.h \
+    cplayerwidget.h \
     csearchlistdelegate.h \
         mainwindow.h \
     csettings.h \

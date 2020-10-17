@@ -18,6 +18,7 @@
 #include "csearchwidget.h"
 #include "creadonlycombinedmodel.h"
 #include "csearchlistdelegate.h"
+#include "cplayerwidget.h"
 
 /// MAIN WINDOW
 namespace Ui {
@@ -40,6 +41,7 @@ private:
     CSettings* const settings; // settings of app
     CMediaBase* const base; // media library
     const boost::shared_ptr<CSearchWidget> searchWidget; // search widget ptr
+    const boost::shared_ptr<CPlayerWidget> playerWidget; // player widget ptr
 
 public slots:
     void WIND_DBErrorNotify(const bool loaded) const; // throws notify about database file load error

@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     settings(new CSettings(this)), // settings initialization
     base(new CMediaBase(this)), // base initialization
-    searchWidget(new CSearchWidget(this)) // search widget init
+    searchWidget(new CSearchWidget(this)), // search widget init
+    playerWidget(new CPlayerWidget(this)) // player widget init
 {
     qDebug() << "Initializing main window..";
     ui->setupUi(this);
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // search widget
     ui->horizontalLayout->insertWidget(0, searchWidget.get()); // adding to layout
     searchWidget->show(); // showing
+    // player widget
+    ui->verticalLayout->insertWidget(4, playerWidget.get());
+    playerWidget->show();
 
     // connections
     qDebug() << "> Setting connections";
