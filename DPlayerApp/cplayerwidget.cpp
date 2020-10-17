@@ -2,6 +2,8 @@
 
 CPlayerWidget::CPlayerWidget(QWidget *parent):
     QWidget(parent),
+    fragmentSlider(new CChartSlider(this)),
+    trackSlider(new CScopeChartSlider(this)),
     playPauseButton(new QPushButton(this)),
     stopButton(new QPushButton(this)),
     repeatButton(new QPushButton(this))
@@ -26,4 +28,31 @@ CPlayerWidget::CPlayerWidget(QWidget *parent):
     // injecting layouts
     mainLayout->addLayout(bottomLayout);
     this->setLayout(mainLayout);
+}
+
+void CPlayerWidget::CChartSlider::paintBackground() const
+{
+
+}
+
+void CPlayerWidget::CChartSlider::paintEvent(QPaintEvent *event)
+{
+    paintBackground();
+}
+
+CPlayerWidget::CChartSlider::CChartSlider(QWidget *parent):
+    QAbstractSlider(parent)
+{
+
+}
+
+void CPlayerWidget::CScopeChartSlider::paintEvent(QPaintEvent *event)
+{
+
+}
+
+CPlayerWidget::CScopeChartSlider::CScopeChartSlider(QWidget *parent):
+    CChartSlider(parent)
+{
+
 }
