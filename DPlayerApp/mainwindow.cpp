@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     settings(new CSettings(this)), // settings initialization
     base(new CMediaBase(this)), // base initialization
     searchWidget(new CSearchWidget(this)), // search widget init
-    playerWidget(new CPlayerWidget(this)) // player widget init
+    playerWidget(new CPlayerWidget(this)), // player widget init
+    mediaPlayer(new QMediaPlayer(this))
 {
     qDebug() << "Initializing main window..";
     ui->setupUi(this);
@@ -65,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->playlists_listView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), base, SLOT(BASE_changeFragmentsList(QItemSelection, QItemSelection))); // changing list in fragments model
     connect(ui->dropSiteLabel, SIGNAL(isDeleteAccepted(const QMimeData*,bool&)), base, SLOT(BASE_isDeleteAccepted(const QMimeData*,bool&))); // checks if mime data dropped on dropsite can be deleted
     connect(ui->dropSiteLabel, SIGNAL(droppedMimeData(const QMimeData*)), base, SLOT(BASE_delete(const QMimeData*))); // deleted provided data
+    connect(ui->fragments_listView, SIGNAL(doubleClicked(const QModelIndex&)), base, SLOT(playSelected(const QModelIndex&)));
+    connect(base, SIGNAL(playMedia(const QMediaContent&)), mediaPlayer.get(), SLOT(setMedia(const QMediaContent&)));
 
     // settings controls
     ui->dropSiteLabel->setFormats({CInternalMime<void>::fragmentMimeType, CInternalMime<void>::playlistMimeType}); // setting formats of dropSite accepted formats

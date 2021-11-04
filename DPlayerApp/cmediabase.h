@@ -84,6 +84,7 @@ public slots:
     void BASE_delete(const QMimeData* data); // deletes provided data
     void BASE_isDeleteAccepted(const QMimeData* data, bool& flag) const; // checks if provided data can be dropped for delete
     void BASE_isEditionAccepted(const int playlistID, bool& flag) const; // checks if deletion withing playlist of given id is acceptable
+    void playSelected(const QModelIndex& selected) const;
 
 private slots:
      void BASE_insertFragments(QList<CMediaFragment> toBeCopied, QList<CMediaFragment*>& inserted); // inserts toBeCopied to _fragments and returns pointers to them
@@ -95,6 +96,7 @@ signals:
     void BASE_DatabaseCreated(const QFileInfo database_created) const; // result of database file creating
     void BASE_DatabaseReloaded(const bool result) const; // result of reloading database file
     void BASE_DatabaseSaved(const bool result) const; // result of database saving to file
+    void playMedia(const QMediaContent&) const;
 
 };
 

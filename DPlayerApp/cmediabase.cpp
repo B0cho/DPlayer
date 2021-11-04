@@ -523,6 +523,13 @@ void CMediaBase::BASE_isEditionAccepted(const int playlistID, bool &flag) const
         flag = false;
 }
 
+void CMediaBase::playSelected(const QModelIndex &selected) const
+{
+    const QUrl mediaUrl = _fragmentsModel.da
+    QMediaContent* mediaContent = new QMediaContent(mediaUrl);
+    emit playMedia(mediaContent);
+}
+
 /*!
  * \brief Clears database and sets its structure up
  * \b {Returns:} \c true if process was succesful; \c false it it wasn't possible

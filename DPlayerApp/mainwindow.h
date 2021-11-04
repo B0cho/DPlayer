@@ -42,6 +42,7 @@ private:
     CMediaBase* const base; // media library
     const boost::shared_ptr<CSearchWidget> searchWidget; // search widget ptr
     const boost::shared_ptr<CPlayerWidget> playerWidget; // player widget ptr
+    boost::shared_ptr<QMediaPlayer> mediaPlayer;
 
 public slots:
     void WIND_DBErrorNotify(const bool loaded) const; // throws notify about database file load error
